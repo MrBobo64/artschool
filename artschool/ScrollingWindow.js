@@ -332,5 +332,5 @@ ScrollingWindow.prototype.scrollVertical = function(y) {
 };
 
 ScrollingWindow.prototype.scrollHorizontal = function(x) {
-
+	// potato
 };
