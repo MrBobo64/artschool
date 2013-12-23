@@ -19,11 +19,13 @@ ClusterBox.prototype.toString = function() {
 };
 
 ClusterBox.prototype.draw = function(context) {
-    context.save();
+	if(this.visible) {
+		context.save();
 
-    context.translate(this.x, this.y);
-    context.fillStyle = this.color;
-    context.fillRect(0, 0, this.width, this.height);
+		context.translate(this.x, this.y);
+		context.fillStyle = this.color;
+		context.fillRect(0, 0, this.width, this.height);
 
-    context.restore();
+		context.restore();
+	}
 };

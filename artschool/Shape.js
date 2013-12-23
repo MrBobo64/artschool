@@ -7,6 +7,7 @@ Shape.prototype = {
 	isDraggable: true,
 	canEscapeParent: true,
 	parent: null,
+	visible: true,
 	
     draw: function(context) {
 	    console.log('CANNOT DRAW SHAPE: ' + this);
