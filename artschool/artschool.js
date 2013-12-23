@@ -16,6 +16,8 @@ s.addObject(d);
 s.addObject(e);
 s.addObject(f);
 
-//canvas.objects.push(c);
+var t = new ScrollingWindow(460, 40, 400, 800, 400, 430, false, true);
+
 canvas.objects.push(s);
+canvas.objects.push(t);
 canvas.draw();

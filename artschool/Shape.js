@@ -8,7 +8,7 @@ Shape.prototype = {
 	canEscapeParent: true,
 	parent: null,
 	
-    draw: function() {
+    draw: function(context) {
 	    console.log('CANNOT DRAW SHAPE: ' + this);
 	},
 	redraw: function(context) {

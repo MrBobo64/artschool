@@ -115,12 +115,13 @@ ScrollingWindow = function(x, y, width, height, viewWidth, viewHeight, scrollHor
 	
 	if(scrollHorizontal) {
 	    this.horizontalScrollbar = new Scrollbar(this, false);
+		this.horizontalScrollbar.x = this.horizontalScrollbar.fatness + 2;
+		this.horizontalScrollbar.y = this.viewHeight - this.horizontalScrollbar.fatness - 2;
 	}
 	if(scrollVertical) {
 	    this.verticalScrollbar = new Scrollbar(this, true);
 		this.verticalScrollbar.x = this.viewWidth - this.verticalScrollbar.fatness - 2;
 		this.verticalScrollbar.y = this.verticalScrollbar.fatness;
-		console.log(this.verticalScrollbar);
 	}
 	
 	this.isDraggable = false;
@@ -133,6 +134,7 @@ ScrollingWindow.prototype.toString = function() {
     return 'ScrollingWindow (' + this.x + ', ' + this.y + '): ' + this.width + ' x ' + this.height;
 };
 
+// Draw scrollbars
 ScrollingWindow.prototype.drawScrollbars = function(context) {
 	if(this.horizontalScrollbar) {
 	    this.horizontalScrollbar.draw(context);
@@ -142,13 +144,16 @@ ScrollingWindow.prototype.drawScrollbars = function(context) {
 	}
 };
 
+// Draw frame
+//  - Draw a special color for highlight
+//  - Frame provides clip for insides of this window
 ScrollingWindow.prototype.drawFrame = function(context) {
 	context.lineWidth = 1;
 	if(this.highlighted) {
-		context.lineColor = '#DDBB00';
+		context.strokeStyle = '#FFDD50';
 	}
 	else {
-		context.lineColor = '#000000';
+		context.strokeStyle = '#000000';
 	}
     context.rect(0, 0, this.viewWidth, this.viewHeight);
     context.stroke();
@@ -232,15 +237,12 @@ ScrollingWindow.prototype.getDragObject = function(p) {
 		this.dragObject = dragScrollbar;
 		return this;
 	}
-
-	console.log(innerPoint);
+	
 	for(var i = 0; i < this.objects.length; i++) {
         var object = this.objects[i];
-		console.log("tring " + object);
         var box = object.getBoundingBox();
 
         if(Util.pointInBoundingBox(innerPoint, box)) {
-		console.log("Found you");
 			var dragObject = object.getDragObject(innerPoint);
 			if(dragObject) {
 				if(dragObject.canEscapeParent) {
@@ -275,8 +277,11 @@ ScrollingWindow.prototype.allowDrop = function(object) {
 };
 
 ScrollingWindow.prototype.acceptDrop = function(object) {
-	this.addObject(object);
+	console.log(this);
+	console.log("accepting drop of");
+	console.log(object);
 	
+	this.addObject(object);
 	return true;
 };
 
