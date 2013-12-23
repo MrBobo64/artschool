@@ -134,6 +134,15 @@ ScrollingWindow.prototype.toString = function() {
     return 'ScrollingWindow (' + this.x + ', ' + this.y + '): ' + this.width + ' x ' + this.height;
 };
 
+ScrollingWindow.prototype.getBoundingBox = function() {
+	return new Box(this.x, this.y, this.viewWidth, this.viewHeight);
+}
+
+ScrollingWindow.prototype.getRealBoundingBox = function() {
+	var p = this.getRealCoordinates();
+	return new Box(p.x, p.y, this.viewWidth, this.viewHeight);
+}
+
 // Draw scrollbars
 ScrollingWindow.prototype.drawScrollbars = function(context) {
 	if(this.horizontalScrollbar) {
@@ -169,41 +178,32 @@ ScrollingWindow.prototype.draw = function(context) {
 	this.drawFrame(context);
 
 	var translation = { x:0, y:0 };
-	//translation.x = this.x;
-	//translation.y = this.y;
 	
 	if(this.justify == 'left') {
-		//context.translate(this.margin, 0);
 		translation.x += this.margin;
 	}
 	else if(this.justify == 'right') {
-		//context.translate(-this.margin, 0);
 		translation.x += -this.margin;
 	}
     for(var i = 0; i < this.objects.length; i++) {
         var object = this.objects[i];
         
-        var box = object.getBoundingBox();
-        if(Util.boxesIntersect(box, this.getBoundingBox())) {
-			//context.translate(0, this.spacing);
-			translation.y += this.spacing;
-			object.x = translation.x;
-			object.y = translation.y;
-			
+		translation.y += this.spacing;
+		object.x = translation.x;
+		object.y = translation.y;
+		
+        var box = object.getRealBoundingBox();
+        if(Util.boxesIntersect(box, this.getRealBoundingBox())) {
             object.draw(context);
-			//context.translate(0, object.height);
-			translation.y += object.height;
         }
+		
+		translation.y += object.height;
     }
     
     context.restore();
 };
 
 ScrollingWindow.prototype.addObject = function(o) {
-    // Taking over placement
-    o.x = 0;
-	o.y = 0;
-	
 	o.parent = this;
 	
 	this.objects.push(o);

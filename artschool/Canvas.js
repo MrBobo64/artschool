@@ -136,6 +136,8 @@ function Canvas(canvasElement) {
 			var p = self.getPointFromMouse(mouseEvent);
 			self.dropObject(p);
 		}
+		
+		self.draw();
 	}
 	
 	// If this is an inter-object drop, check to see if destination
