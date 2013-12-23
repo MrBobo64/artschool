@@ -42,11 +42,13 @@ function Canvas(canvasElement) {
         self.context.clearRect(box.x, box.y, box.width, box.height);
     
         var p = self.getPointFromMouse(mouseEvent);
-        self.dragObject.drag(p, self.dragPoint);
+		var dx = p.x - self.dragPoint.x;
+		var dy = p.y - self.dragPoint.y;
+        self.dragObject.drag(dx, dy);
     
         self.dragPoint = p;
             
-        self.dragObject.draw(self.context);
+        self.dragObject.redraw(self.context);
     };
 
     this.onMouseDown = function(mouseEvent) {
@@ -56,9 +58,12 @@ function Canvas(canvasElement) {
             var box = object.getBoundingBox();
 
             if(Util.pointInBoundingBox(p, box)) {
-               self.dragPoint = p;
-               self.dragObject = object;
-               break;
+			   var dragObject = object.getDragObject(p);
+			   if(dragObject) {
+			       self.dragObject = dragObject;
+				   self.dragPoint = p;
+				   break;
+				}
             }
         }
     };

@@ -1,40 +1,29 @@
-/*
- * ClusterBox implements Shape
- */
-function ClusterBox(x, y, color, depth) {
-    var self = this;
+/* ClusterBox extends Shape */
 
-    this.draw = function(context) {
-        context.save();
-
-        context.translate(self.x, self.y);
-        context.fillStyle = self.color;
-        context.fillRect(0, 0, self.width, self.height);
-
-        context.restore();
-    };
-
-    this.getBoundingBox = function() {
-        var box = new Object();
-        box.x = self.x;
-        box.y = self.y;
-        box.width = self.width;
-        box.height= self.height;
-        
-        return box;
-    };
-    
-    this.drag = function(newPoint, oldPoint) {
-        self.dragObject.x += p.x - self.dragPoint.x;
-        self.dragObject.y += p.y - self.dragPoint.y;
-    };
-
+ClusterBox = function(x, y, color, depth) {
     this.x = x;
-    this.y = y;
+	this.y = y;
+	this.color = color;
+	this.depth = depth;
+	
     this.width = 200;
     this.height = 120;
-    this.color = color;
-    this.depth = depth;
 
     this.isDraggable = true;
-}
+};
+
+ClusterBox.prototype = Proto.clone(Shape.prototype);
+
+ClusterBox.prototype.toString = function() {
+    return 'ClusterBox (' + this.x + ', ' + this.y + '): ' + this.width + ' x ' + this.height;
+};
+
+ClusterBox.prototype.draw = function(context) {
+    context.save();
+
+    context.translate(this.x, this.y);
+    context.fillStyle = this.color;
+    context.fillRect(0, 0, this.width, this.height);
+
+    context.restore();
+};
