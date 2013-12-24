@@ -70,6 +70,8 @@ Scrollbar.prototype.getBoundingBox = function() {
 
 Scrollbar.prototype.drag = function(dx, dy) {
     if(this.vertical) {
+		//var originalY = this.y;
+	
 	    this.y += dy;
 		if(this.y < this.fatness) {
 		    this.y = this.fatness;
@@ -81,6 +83,8 @@ Scrollbar.prototype.drag = function(dx, dy) {
 		this.scrollingWindow.scrollVertical(this.y - this.fatness);
 	}
 	else {
+		//var originalX = this.x;
+	
 		this.x += dx;
 		if(this.x < this.fatness) {
 		    this.x = this.fatness;
@@ -310,19 +314,21 @@ ScrollingWindow.prototype.checkScrollbars = function() {
 
 ScrollingWindow.prototype.scrollVertical = function(y) {
 	if(this.verticalScrollbar) {
+		// GET CAN THIS INFO AN ALL ADD/REMOVE instead of recalculating
 		var fullHeight = 0;
 		for(var i = 0; i < this.objects.length; i++) {
 			fullHeight += this.spacing;
 			fullHeight += this.objects[i].height;
 		}
-		//fullHeight += this.spacing;
-		// HACK: the above to compensate for difference in this.height and scrollHeight
+		fullHeight += this.spacing;
 		
-		var scrollHeight = this.height - this.verticalScrollbar.length - 2 * this.verticalScrollbar.fatness;
-		var ratio = (fullHeight-scrollHeight)/fullHeight;
+		// Adjust actually scrolling distance by what is blocked off by scrollbar itself
+		// accounting also for margins
+		var adjust = this.verticalScrollbar.length + 2 * this.verticalScrollbar.fatness;
+		var scrollHeight = this.height - adjust;
 		
 		if(fullHeight > this.height) {
-			this.scrollY = ratio * y;
+			this.scrollY = y / scrollHeight * (fullHeight-scrollHeight-adjust);
 		}
 		else {
 			this.scrollY = 0;

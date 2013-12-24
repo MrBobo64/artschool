@@ -29,7 +29,7 @@ ClusterBox.prototype.drawBackground = function(context) {
 			var red = -10 + (i*blockWidth) + Math.floor(255/blockRows * j);
 			var green = -10 + (i*blockWidth) + 99 + Math.floor((255-99)/blockRows * j);
 			var blue = 255;
-														   
+			
 			context.fillStyle = 'rgb(' + red + ', ' + green + ', ' + blue + ')';
 			context.fillRect(j*blockWidth, i*blockHeight, blockWidth, blockHeight);
 		}
