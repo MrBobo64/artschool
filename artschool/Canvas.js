@@ -32,6 +32,13 @@ function Canvas(canvasElement) {
 
 	// Draws each object registered to the canvas (top-level objects, most like)
     this.draw = function() {
+		if(self.canvasElement.width != window.innerWidth) {
+			self.canvasElement.width = window.innerWidth;
+		}
+		if(self.canvasElement.height != window.innerHeight) {
+			self.canvasElement.height = window.innerHeight;
+		}
+	
         for(var i = 0; i < self.objects.length; i++) {
             var object = self.objects[i];
             object.draw(self.context);
@@ -215,4 +222,9 @@ function Canvas(canvasElement) {
     this.canvasElement.onmouseup = this.onMouseUp;
 	
 	this.mouseIsDown = false;
+	
+	/*this.context.lineWidth = 1;
+	this.context.rect(0, 0, this.context.width, this.context.height);
+	this.context.strokeStyle = '#FFFFFF';
+	this.context.stroke();*/
 }
