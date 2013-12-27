@@ -12,17 +12,20 @@ var f = new ClusterBox(0, 0, '#229922', 0);
 var g = new ClusterBox(0, 0, '#229922', 0);
 var h = new ClusterBox(0, 0, '#229922', 0);
 
+console.log(c.toString());
 
 var s = new ScrollingWindow(40, 40, 400, 430, false, true);
-s.addObject(c);
-s.addObject(d);
-s.addObject(e);
-s.addObject(f);
-s.addObject(g);
-s.addObject(h);
+s.addComponent(c);
+s.addComponent(d);
+s.addComponent(e);
+s.addComponent(f);
+s.addComponent(g);
+s.addComponent(h);
+
+console.log(s.toString());
 
 var t = new ScrollingWindow(460, 40, 400, 430, false, true);
 
-canvas.objects.push(s);
-canvas.objects.push(t);
-canvas.draw();
+canvas.addComponent(s);
+canvas.addComponent(t);
+canvas.drawAll();

@@ -1,106 +1,4 @@
-/* Scrollbar extends Shape */
-
-Scrollbar = function(scrollingWindow, vertical) {
-    this.x = 0;
-	this.y = 0;
-
-    this.scrollingWindow = scrollingWindow;
-	this.vertical = vertical;
-	
-	this.length = 30;
-	this.fatness = 8;
-	
-	this.isDraggable = true;
-	this.canEscapeParent = false;
-	
-	if(vertical) {
-		this.width = this.fatness;
-		this.height = this.length;
-	}
-	else {
-		this.width = this.length;
-		this.height = this.fatness;
-	}
-	
-	this.highlighted = false;
-};
-Scrollbar.prototype = Proto.clone(Shape.prototype);
-
-Scrollbar.prototype.toString = function() {
-	if(this.vertical) {
-		return 'ScrollBar (v) (' + this.x + ', ' + this.y + '): ' + this.width + ' x ' + this.height;
-	}
-	else {
-		return 'ScrollBar (h) (' + this.x + ', ' + this.y + '): ' + this.width + ' x ' + this.height;
-	}
-};
-
-Scrollbar.prototype.draw = function(context) {
-	if(this.visible) {
-		context.save();
-		
-		context.translate(this.x, this.y);
-		
-		context.beginPath();
-		context.moveTo(0, 0);
-		if(this.vertical) {
-			context.lineTo(0, this.length);
-		}
-		else {
-			context.lineTo(this.length, 0);
-		}
-		context.lineWidth = this.fatness;
-		context.lineCap = 'round';
-		
-		context.strokeStyle = '#777777';
-		context.stroke();
-		
-		context.restore();
-	}
-};
-
-Scrollbar.prototype.getBoundingBox = function() {
-    if(this.vertical) {
-	    return new Box(this.x - this.fatness/2, this.y, this.width, this.height);
-	}
-	else {
-		return new Box(this.x, this.y - this.fatness/2, this.width, this.height);
-	}
-};
-
-Scrollbar.prototype.drag = function(dx, dy) {
-    if(this.vertical) {
-		//var originalY = this.y;
-	
-	    this.y += dy;
-		if(this.y < this.fatness) {
-		    this.y = this.fatness;
-		}
-		if(this.y > this.scrollingWindow.height - this.length - this.fatness) {
-		    this.y = this.scrollingWindow.height - this.length - this.fatness;
-		}
-		
-		this.scrollingWindow.scrollVertical(this.y - this.fatness);
-	}
-	else {
-		//var originalX = this.x;
-	
-		this.x += dx;
-		if(this.x < this.fatness) {
-		    this.x = this.fatness;
-		}
-		if(this.x > this.scrollingWindow.width - this.fatness) {
-		    this.x = this.scrollingWindow.width - this.fatness;
-		}
-		
-		this.scrollingWindow.scrollHorizontal(this.x - this.fatness);
-	}
-};
-
-
-/* ScrollingWindow extends Shape (and maybe "Window" or something that
-   it has in common with Canvas
-*/
+/* ScrollingWindow extends Container */
 // Needs object coordinating how to place items inside, right now, going vertically
 
 ScrollingWindow = function(x, y, width, height, scrollHorizontal, scrollVertical) {
@@ -115,8 +13,6 @@ ScrollingWindow = function(x, y, width, height, scrollHorizontal, scrollVertical
 	this.justify = 'left';
 	this.margin = 10;
 	this.spacing = 10;
-	
-	this.objects = new Array();
 	
 	this.horizontalScrollbar = null;
 	this.verticalScrollbar = null;
@@ -135,13 +31,8 @@ ScrollingWindow = function(x, y, width, height, scrollHorizontal, scrollVertical
 	this.isDraggable = false;
 	this.dragObject = null;
 };
-ScrollingWindow.prototype = Proto.clone(Shape.prototype);
+ScrollingWindow.prototype = Proto.clone(Container.prototype);
 
-ScrollingWindow.prototype.toString = function() {
-    return 'ScrollingWindow (' + this.x + ', ' + this.y + '): ' + this.width + ' x ' + this.height;
-};
-
-// Draw scrollbars
 ScrollingWindow.prototype.drawScrollbars = function(context) {
 	if(this.horizontalScrollbar) {
 	    this.horizontalScrollbar.draw(context);
@@ -167,8 +58,10 @@ ScrollingWindow.prototype.drawFrame = function(context) {
     context.clip();
 };
 
-ScrollingWindow.prototype.draw = function(context) {
+ScrollingWindow.prototype.draw = function(canvas) {
 	if(this.visible) {
+		var context = canvas.getContext();
+	
 		context.save();
 		
 		context.translate(this.x, this.y);
@@ -186,8 +79,8 @@ ScrollingWindow.prototype.draw = function(context) {
 		else if(this.justify == 'right') {
 			translation.x += -this.margin;
 		}
-		for(var i = 0; i < this.objects.length; i++) {
-			var object = this.objects[i];
+		for(var i = 0; i < this.components.length; i++) {
+			var object = this.components[i];
 			
 			translation.y += this.spacing;
 			object.x = translation.x;
@@ -205,12 +98,6 @@ ScrollingWindow.prototype.draw = function(context) {
 		
 		context.restore();
 	}
-};
-
-ScrollingWindow.prototype.addObject = function(o) {
-	o.parent = this;
-	
-	this.objects.push(o);
 };
 
 ScrollingWindow.prototype.dragScrollbars = function(p) {
@@ -242,8 +129,8 @@ ScrollingWindow.prototype.getDragObject = function(p) {
 		return this;
 	}
 	
-	for(var i = 0; i < this.objects.length; i++) {
-        var object = this.objects[i];
+	for(var i = 0; i < this.components.length; i++) {
+        var object = this.components[i];
         var box = object.getBoundingBox();
 
         if(Util.pointInBoundingBox(innerPoint, box)) {
@@ -256,7 +143,8 @@ ScrollingWindow.prototype.getDragObject = function(p) {
 					dragObject.y = p.y;
 					
 					dragObject.parent = null;
-					this.objects.splice(i, 1);
+					this.removeComponentAtIndex(i);
+					//this.objects.splice(i, 1);
 					
 					this.checkScrollbars();
 					return dragObject;
@@ -283,7 +171,7 @@ ScrollingWindow.prototype.allowDrop = function(object) {
 };
 
 ScrollingWindow.prototype.acceptDrop = function(object) {
-	this.addObject(object);
+	this.addComponent(object);
 	this.checkScrollbars();
 	return true;
 };

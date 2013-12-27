@@ -47,7 +47,8 @@ Component.prototype = {
 	},
 	
 	drag: function(dx, dy) {
-		
+		this.x += dx;
+		this.y += dy;
 	},
 	
 	getRealCoordinates: function() {
@@ -82,5 +83,9 @@ Component.prototype = {
 		}
 		
 		return hier;
+	},
+	
+	isContainer: function() {
+		return false;
 	}
 };
