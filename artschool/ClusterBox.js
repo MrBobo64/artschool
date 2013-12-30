@@ -12,6 +12,7 @@ function ClusterBox(x, y, color, depth) {
     this.height = 120;
 
     this.draggable = true;
+    this.canEscapeParent = true;
     
     this.type = 'clusterbox';
 
@@ -32,7 +33,7 @@ function ClusterBox(x, y, color, depth) {
                 context.fillRect(j*blockWidth, i*blockHeight, blockWidth, blockHeight);
             }
         }
-                               
+        
         if(this.selected) {
             context.fillStyle = 'rgb(0, 0, 0, 0.1)';
             context.fillRect(0, 0, this.width, this.height);

@@ -21,7 +21,7 @@ function Canvas(canvasElement) {
         self.onMouseMove(m);
     };
 	this.canvasElement.onmouseup = function(m) {
-        self.onMouseUp;
+        self.onMouseUp(m);
     };
 	
 	this.mouseIsDown = false;
@@ -67,8 +67,12 @@ function Canvas(canvasElement) {
         this.draw(this);
     };
 
-    this.redrawDirtyCanvas = function(dirty) {
+    this.clearBox = function(dirty) {
         this.context.clearRect(dirty.x, dirty.y, dirty.width, dirty.height);
+    };
+    
+    this.redrawDirtyCanvas = function(dirty) {
+        this.clearBox(dirty);
         
         for(var i = 0; i < this.components.length; i++) {
             var component = this.components[i];
@@ -80,13 +84,13 @@ function Canvas(canvasElement) {
     };
 
     // Drags an object around
-    //  - Difference is mouse position is sent to dragging object
+    //  - Difference in mouse position is sent to dragging object
     //  - Objects which have been dragged over must be redrawn
     //  - Objects which can accept a drop should make that obvious via highlight
     this.drag = function(p) {
         // Here is the dirty rectangle, redraw anything in here
         var dirty = this.dragObject.getRealBoundingBox();
-        this.context.clearRect(dirty.x, dirty.y, dirty.width, dirty.height);
+        this.clearBox(dirty);
         
         var dx = p.x - this.dragPoint.x;
         var dy = p.y - this.dragPoint.y;
@@ -137,9 +141,14 @@ function Canvas(canvasElement) {
                 if(dragObject) {
                     // Pulled an orphaned object
                     if(dragObject != object) {
-                        dragObject.parent = self;
-                        this.objects.push(dragObject);
+                        dragObject.parent = this;
+                        //this.components.push(dragObject);
+                        this.addComponent(dragObject);
                         this.dragParent = object;
+                        
+                        var realCoords = object.getRealCoordinates();
+                        dragObject.x += realCoords.x;
+                        dragObject.y += realCoords.y;
                     }
                     else {
                         this.dragParent = null;
@@ -169,7 +178,7 @@ function Canvas(canvasElement) {
         }
         
         // TODO: this can't be necessary
-        this.draw();
+        this.drawCanvas();
     }
 
     // If this is an inter-object drop, check to see if destination
@@ -181,8 +190,8 @@ function Canvas(canvasElement) {
         if(this.dragParent) {
             var dirty = this.dragObject.getRealBoundingBox();
             
-            for(var i = 0; i < this.objects.length; i++) {
-                var object = this.objects[i];
+            for(var i = 0; i < this.components.length; i++) {
+                var object = this.components[i];
                 if(object == this.dragObject) {
                     continue;
                 }
@@ -190,17 +199,17 @@ function Canvas(canvasElement) {
                 // Check for allow to drop
                 if(Util.pointInBoundingBox(p, object.getRealBoundingBox())) {
                     if(object.acceptDrop(this.dragObject)) {
-                        for(var j = 0; j < this.objects.length; j++) {
+                        this.removeComponent(this.dragObject);
+                        /*for(var j = 0; j < this.objects.length; j++) {
                             if(this.objects[j] == this.dragObject) {
                                 this.objects.splice(j, 1);
                                 break;
                             }
-                        }
-                    
-                        //this.context.clearRect(dirty.x, dirty.y, dirty.width, dirty.height);
-                        this.redrawDirty(dirty);
-                        object.removeHighlight(this.context);
-                        object.redraw(this.context);
+                        }*/
+                        
+                        this.redrawDirtyCanvas(dirty);
+                        object.removeDropHighlight(this);
+                        //object.redraw(this);
                         this.dragObject = null;
                         this.dragParent = null;
                         
@@ -220,7 +229,7 @@ function Canvas(canvasElement) {
                     }
                 }
                 //this.context.clearRect(dirty.x, dirty.y, dirty.width, dirty.height);
-                this.redrawDirty(dirty);
+                this.redrawDirtyCanvas(dirty);
                 this.dragParent.redraw(this.context);
                 this.dragObject = null;
                 this.dragParent = null;

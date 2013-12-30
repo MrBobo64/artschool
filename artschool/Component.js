@@ -6,7 +6,7 @@ function Component() {
 	this.width = 0;
 	this.height = 0;
 	this.draggable = false;
-	this.canEscaleParent = false;
+	this.canEscapeParent = false;
 	this.visible = true;
 	this.type = 'component';
 	this.parent = null;
@@ -31,6 +31,10 @@ function Component() {
 		return this.visible;
 	};
 	
+    this.willEscapeParent = function() {
+        return this.canEscapeParent;
+    };
+    
 	this.getBoundingBox = function() {
 		return new Box(this.x, this.y, this.width, this.height);
 	};

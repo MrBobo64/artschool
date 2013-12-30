@@ -30,7 +30,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
 		this.verticalScrollbar.y = this.verticalScrollbar.fatness;
 	}
 	
-	this.isDraggable = false;
+	this.draggable = false;
 	this.dragObject = null;
     
     //this.components = [];
@@ -49,7 +49,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
     // Draw frame
     //  - Draw a special color for highlight
     //  - Frame provides clip for insides of this window
-    this.drawFrame = function(canvas) {
+    this.drawFrame = function(canvas, shouldClip) {
         var context = canvas.getContext();
 
         context.lineWidth = 1;
@@ -61,7 +61,10 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
         }
         context.rect(0, 0, this.width, this.height);
         context.stroke();
-        context.clip();
+        
+        if(shouldClip) {
+            context.clip();
+        }
     };
 
     this.draw = function(canvas) {
@@ -72,8 +75,11 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
             
             context.translate(this.x, this.y);
             
+            // TODO: CHANGE IF NOT STRICTLY NECESSARY
+            canvas.clearBox(this.getBoundingBox());
+            
             this.drawScrollbars(canvas);
-            this.drawFrame(canvas);
+            this.drawFrame(canvas, true);
 
             var translation = {x: 0, y:0};
             translation.x = -this.scrollX;
@@ -100,7 +106,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
                 translation.y += object.height;
             }
             
-            this.drawFrame(canvas);
+            this.drawFrame(canvas, false);
             
             context.restore();
         }
@@ -142,7 +148,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
             if(Util.pointInBoundingBox(innerPoint, box)) {
                 var dragObject = object.getDragObject(innerPoint);
                 if(dragObject) {
-                    if(dragObject.canEscapeParent) {
+                    if(dragObject.willEscapeParent()) {
                         // Give the object its real coordinates
                         var p = dragObject.getRealCoordinates();
                         dragObject.x = p.x;
@@ -150,7 +156,6 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
                         
                         dragObject.parent = null;
                         this.removeComponentAtIndex(i);
-                        //this.objects.splice(i, 1);
                         
                         this.checkScrollbars();
                         return dragObject;
@@ -182,17 +187,17 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
         return true;
     };
 
-    this.setDropHighlight = function(context) {
+    this.setDropHighlight = function(canvas) {
         if(!this.hightlighted) {
             this.highlighted = true;
-            this.redraw(context);
+            this.redraw(canvas);
         }
     };
 
-    this.removeDropHighlight = function(context) {
+    this.removeDropHighlight = function(canvas) {
         if(this.highlighted) {
             this.highlighted = false;
-            this.redraw(context);
+            this.redraw(canvas);
         }
     };
 
