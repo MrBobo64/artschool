@@ -3,6 +3,14 @@
  * Main, as it were
  */
 
+/*var component = new Component();
+var container = new Container();
+
+console.log(component.toString());
+console.log(container.toString());
+
+container.addComponent(component);*/
+
 var canvas = new Canvas(document.getElementById('d'));
 
 var c = new ClusterBox(0, 0, '#22FF22', 0);
@@ -28,4 +36,4 @@ var t = new ScrollingWindow(460, 40, 400, 430, false, true);
 
 canvas.addComponent(s);
 canvas.addComponent(t);
-canvas.drawAll();
+canvas.drawCanvas();

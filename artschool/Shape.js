@@ -1,5 +1,10 @@
 /* Shape extends Component */
-Shape = function() {
+function Shape() {
+    Component.call(this);
+    //console.log("Shape Constructor");
+    
 	this.type = 'shape';
-};
-Shape.prototype = Proto.clone(Component.prototype);
+    
+    this.prototype = new Component();
+    this.prototype.constructor = Shape;
+}

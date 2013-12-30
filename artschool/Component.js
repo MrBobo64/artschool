@@ -1,57 +1,58 @@
-Component = new Object();
-Component.prototype = {
-	x: 0,
-	y: 0,
-	width: 0,
-	height: 0,
-	draggable: false,
-	canEscaleParent: false,
-	visible: true,
-	type: 'component',
-	parent: null,
+function Component() {
+    //console.log("Component Constructor");
+    
+	this.x = 0;
+	this.y = 0;
+	this.width = 0;
+	this.height = 0;
+	this.draggable = false;
+	this.canEscaleParent = false;
+	this.visible = true;
+	this.type = 'component';
+	this.parent = null;
 	
-	draw: function(canvas) {
+	this.draw = function(canvas) {
 		console.error('Cannot draw ' + this.type);
-	},
+	};
 	
-	redraw: function(canvas) {
+	this.redraw = function(canvas) {
 		this.draw(canvas);
-	},
+	};
 	
-	redrawDirty: function(dirty, canvas) {
+	this.redrawDirty = function(dirty, canvas) {
 		this.redraw(canvas);
-	},
+	};
 	
-	isDraggable: function() {
+	this.isDraggable = function() {
 		return this.draggable;
-	},
+	};
 	
-	isVisible: function() {
+	this.isVisible = function() {
 		return this.visible;
-	},
+	};
 	
-	getBoundingBox: function() {
+	this.getBoundingBox = function() {
 		return new Box(this.x, this.y, this.width, this.height);
-	},
+	};
 	
-	toString: function() {
+	this.toString = function() {
 		return this.type + ': (' + this.x + ', ' + this.y + '): ' + this.width + ' x ' + this.height;
-	},
+	};
 	
-	getDragObject: function(p) {
+	this.getDragObject = function(p) {
 	    if(this.isDraggable()) {
 		    return this;
 		}
 		
 		return null;
-	},
+	};
 	
-	drag: function(dx, dy) {
+	this.drag = function(dx, dy) {
 		this.x += dx;
 		this.y += dy;
-	},
+	};
 	
-	getRealCoordinates: function() {
+	this.getRealCoordinates = function() {
 		var p = {x: 0, y: 0};
 	
 		if(!this.parent) {
@@ -65,14 +66,14 @@ Component.prototype = {
 		}
 		
 		return p;
-	},
+	};
 	
-	getRealBoundingBox: function() {
+	this.getRealBoundingBox = function() {
 		var p = this.getRealCoordinates();
 		return new Box(p.x, p.y, this.width, this.height);
-	},
+	};
 	
-	getHierarchy: function() {
+	this.getHierarchy = function() {
 		var hier = [];
 		hier.push(this.type);
 		
@@ -83,9 +84,9 @@ Component.prototype = {
 		}
 		
 		return hier;
-	},
+	};
 	
-	isContainer: function() {
+	this.isContainer = function() {
 		return false;
-	}
-};
+	};
+}
