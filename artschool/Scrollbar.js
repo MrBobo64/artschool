@@ -1,5 +1,8 @@
 /* Scrollbar extends Shape */
 function Scrollbar(scrollingWindow, vertical) {
+    //this.prototype = new Shape();
+    //this.prototype.constructor = Scrollbar;
+
     Shape.call(this);
     //console.log("Scrollbar Constructor");
 
@@ -83,7 +86,4 @@ function Scrollbar(scrollingWindow, vertical) {
             this.scrollingWindow.scrollHorizontal(this.x - this.fatness);
         }
     };
-    
-    this.prototype = new Shape();
-    this.prototype.constructor = Scrollbar;
 }

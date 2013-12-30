@@ -2,6 +2,9 @@
  * Canvas extends Container
  */
 function Canvas(canvasElement) {
+    //this.prototype = new Container();
+    //this.prototype.constructor = Canvas;
+    
     Container.call(this);
     //console.log("Canvas Constructor");
     
@@ -146,9 +149,9 @@ function Canvas(canvasElement) {
                         this.addComponent(dragObject);
                         this.dragParent = object;
                         
-                        var realCoords = object.getRealCoordinates();
-                        dragObject.x += realCoords.x;
-                        dragObject.y += realCoords.y;
+                        var realCoords = dragObject.getRealCoordinates();
+                        dragObject.x = realCoords.x;
+                        dragObject.y = realCoords.y;
                     }
                     else {
                         this.dragParent = null;
@@ -178,9 +181,9 @@ function Canvas(canvasElement) {
         }
         
         // TODO: this can't be necessary
-        this.drawCanvas();
+        //this.drawCanvas();
     }
-
+    
     // If this is an inter-object drop, check to see if destination
     // will accept it.  If not, return to original parent.
     // If it was an intra-object drop, just stop dragging it.
@@ -220,17 +223,11 @@ function Canvas(canvasElement) {
             
             // If it was not accepted, return to parent
             if(this.dragObject) {
-                this.dragParent.addObject(this.dragObject);
+                this.removeComponent(this.dragObject);
+                this.dragParent.addComponent(this.dragObject);
                 
-                for(var i = 0; i < this.objects.length; i++) {
-                    if(this.objects[i] == this.dragObject) {
-                        this.objects.splice(i, 1);
-                        break;
-                    }
-                }
-                //this.context.clearRect(dirty.x, dirty.y, dirty.width, dirty.height);
                 this.redrawDirtyCanvas(dirty);
-                this.dragParent.redraw(this.context);
+                this.dragParent.redraw(this);
                 this.dragObject = null;
                 this.dragParent = null;
             }
@@ -243,7 +240,4 @@ function Canvas(canvasElement) {
     this.getRealCoordinates = function() {
         return {x: 0, y: 0};
     };
-
-    this.prototype = new Container();
-    this.prototype.constructor = Canvas;
 }

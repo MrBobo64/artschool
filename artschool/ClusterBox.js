@@ -1,5 +1,8 @@
 /* ClusterBox extends Shape */
 function ClusterBox(x, y, color, depth) {
+    //this.prototype = new Shape();
+    //this.prototype.constructor = ClusterBox;
+    
     Shape.call(this);
     //console.log("ClusterBox Constructor");
 
@@ -64,7 +67,4 @@ function ClusterBox(x, y, color, depth) {
             context.restore();
         }
     };
-    
-    this.prototype = new Shape();
-    this.prototype.constructor = ClusterBox;
 }

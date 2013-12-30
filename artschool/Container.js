@@ -1,5 +1,8 @@
 /* Container extends Component */
 function Container() {
+    //this.prototype = new Component();
+    //this.prototype.constructor = Container;
+    
     Component.call(this);
     //console.log("Container constructor");
     
@@ -13,6 +16,7 @@ function Container() {
     this.addComponent = function(component) {
         //console.log(this.getComponents());
         this.components.push(component);
+        component.parent = this;
     };
 
     this.removeComponentAtIndex = function(i) {
@@ -53,7 +57,4 @@ function Container() {
     this.removeDropHighlight = function(canvas) {
         console.error("Cannot remove drop highlight on " + this.type);
     };
-    
-    this.prototype = new Component();
-    this.prototype.constructor = Container;
 }

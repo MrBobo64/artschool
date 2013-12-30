@@ -33,6 +33,7 @@ s.addComponent(h);
 console.log(s.toString());
 
 var t = new ScrollingWindow(460, 40, 400, 430, false, true);
+t.shout = true;
 
 canvas.addComponent(s);
 canvas.addComponent(t);

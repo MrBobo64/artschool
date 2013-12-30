@@ -1,8 +1,13 @@
 /* ScrollingWindow extends Container */
 // Needs object coordinating how to place items inside, right now, going vertically
 function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) {
+    //this.prototype = new Container();
+    //this.prototype.constructor = ScrollingWindow;
+    
     Container.call(this);
     //console.log("ScrollingWindow Constructor");
+    
+    this.shout = false;
     
     this.x = x;
 	this.y = y;
@@ -32,8 +37,6 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
 	
 	this.draggable = false;
 	this.dragObject = null;
-    
-    //this.components = [];
     
     this.type = 'scrollingwindow';
     
@@ -76,7 +79,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
             context.translate(this.x, this.y);
             
             // TODO: CHANGE IF NOT STRICTLY NECESSARY
-            canvas.clearBox(this.getBoundingBox());
+            context.clearRect(0, 0, this.width, this.height);
             
             this.drawScrollbars(canvas);
             this.drawFrame(canvas, true);
@@ -91,6 +94,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
             else if(this.justify == 'right') {
                 translation.x += -this.margin;
             }
+            
             for(var i = 0; i < this.components.length; i++) {
                 var object = this.components[i];
                 
@@ -184,6 +188,8 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
     this.acceptDrop = function(object) {
         this.addComponent(object);
         this.checkScrollbars();
+        
+        console.log(this.components);
         return true;
     };
 
@@ -239,7 +245,5 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
     this.scrollHorizontal = function(x) {
         // potato
     };
-    
-    this.prototype = new Container();
-    this.prototype.constructor = ScrollingWindow;
 }
+//ScrollingWindow.prototype = new Container();
