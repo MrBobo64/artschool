@@ -26,7 +26,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
 	this.arrangement.spacing = 10;
 	this.arrangement.tiling = 'vertical';
 	this.arrangement.justify = 'left';
-	this.arrangement.stretch = 'none';
+	this.arrangement.stretch = 'max';
 	
 	
 	this.horizontalScrollbar = null;
@@ -90,7 +90,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
             // TODO: CHANGE IF NOT STRICTLY NECESSARY
             context.clearRect(0, 0, this.width, this.height);
             
-            this.drawScrollbars(canvas);
+            //this.drawScrollbars(canvas);
             this.drawFrame(canvas, true);
 			
 			this.superDraw(canvas, {x:-this.scrollX, y:-this.scrollY});
@@ -121,6 +121,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
                 translation.y += object.height;
             }*/
             
+			this.drawScrollbars(canvas);
             this.drawFrame(canvas, false);
             
             context.restore();

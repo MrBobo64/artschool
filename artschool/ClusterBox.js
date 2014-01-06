@@ -61,7 +61,10 @@ function ClusterBox(x, y, color, depth) {
         
             context.save();
 
-            context.translate(this.x, this.y);        
+            context.translate(this.x, this.y);
+			
+			context.rect(0, 0, this.width, this.height);
+			context.clip();
             this.drawBackground(context);
 
             context.restore();

@@ -67,6 +67,19 @@ function Container() {
 			translation.x += this.width - this.arrangement.margin;
 		}
 		
+		this.setWidth = -1;
+		if(this.arrangement.stretch == 'max') {
+			for(var i = 0; i < this.components.length; i++) {
+				var object = this.components[i];
+				if(object.width > this.setWidth) {
+					this.setWidth = object.width;
+				}
+			}
+		}
+		else if(this.arrangement.stretch == 'full') {
+			this.setWidth = this.width - 2 * this.arrangement.margin;
+		}
+		
 		for(var i = 0; i < this.components.length; i++) {
 			var object = this.components[i];
 			
@@ -78,6 +91,10 @@ function Container() {
 				object.x = translation.x;
 			}
 			object.y = translation.y;
+			
+			if(this.setWidth > 0) {
+				object.stretchTo(this.setWidth, object.height);
+			}
 			
 			var box = object.getRealBoundingBox();
 			if(Util.boxesIntersect(box, this.getRealBoundingBox())) {

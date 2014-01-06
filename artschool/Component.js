@@ -93,4 +93,9 @@ function Component() {
 	this.isContainer = function() {
 		return false;
 	};
+	
+	this.stretchTo = function(width, height) {
+		this.width = width;
+		this.height = height;
+	};
 }
