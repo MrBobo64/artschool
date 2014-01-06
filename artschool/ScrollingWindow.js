@@ -17,9 +17,17 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
 	this.scrollX = 0;
 	this.scrollY = 0;
 	
-	this.justify = 'left';
-	this.margin = 10;
-	this.spacing = 10;
+	//this.justify = 'left';
+	//this.margin = 10;
+	//this.spacing = 10;
+	
+	this.arrangement = new Arrangement();
+	this.arrangement.margin = 10;
+	this.arrangement.spacing = 10;
+	this.arrangement.tiling = 'vertical';
+	this.arrangement.justify = 'left';
+	this.arrangement.stretch = 'none';
+	
 	
 	this.horizontalScrollbar = null;
 	this.verticalScrollbar = null;
@@ -70,6 +78,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
         }
     };
 
+	this.superDraw = this.draw;
     this.draw = function(canvas) {
         if(this.visible) {
             var context = canvas.getContext();
@@ -83,8 +92,10 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
             
             this.drawScrollbars(canvas);
             this.drawFrame(canvas, true);
+			
+			this.superDraw(canvas, {x:-this.scrollX, y:-this.scrollY});
 
-            var translation = {x: 0, y:0};
+            /*var translation = {x: 0, y:0};
             translation.x = -this.scrollX;
             translation.y = -this.scrollY;
             
@@ -108,7 +119,7 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
                 }
                 
                 translation.y += object.height;
-            }
+            }*/
             
             this.drawFrame(canvas, false);
             
@@ -222,16 +233,16 @@ function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) 
             // GET CAN THIS INFO AN ALL ADD/REMOVE instead of recalculating
             var fullHeight = 0;
             for(var i = 0; i < this.components.length; i++) {
-                fullHeight += this.spacing;
+                fullHeight += this.arrangement.spacing;
                 fullHeight += this.components[i].height;
             }
-            fullHeight += this.spacing;
+            fullHeight += this.arrangement.spacing;
             
             // Adjust actually scrolling distance by what is blocked off by scrollbar itself
             // accounting also for margins
             var adjust = this.verticalScrollbar.length + 2 * this.verticalScrollbar.fatness;
             var scrollHeight = this.height - adjust;
-            
+			
             if(fullHeight > this.height) {
                 this.scrollY = y / scrollHeight * (fullHeight-scrollHeight-adjust);
             }

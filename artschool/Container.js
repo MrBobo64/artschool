@@ -8,6 +8,7 @@ function Container() {
     
 	this.type = 'container';
     this.components = [];
+	this.arrangement = new Arrangement();
     
     this.getComponents = function() {
         return this.components;
@@ -36,12 +37,86 @@ function Container() {
         return true;
     };
 
-    this.draw = function(canvas) {
-        for(var i = 0; i < this.components.length; i++) {
+    this.draw = function(canvas, translation) {
+		if(!translation) {
+			translation = {x:0, y:0};
+		}
+		
+		if(this.arrangement.tiling == 'horizontal') {
+			this.drawHorizontal(canvas, translation);
+		}
+		else if(this.arrangement.tiling == 'vertical') {
+			this.drawVertical(canvas, translation);
+		}
+		else {
+			this.drawFree(canvas);
+		}
+    };
+	
+	this.drawFree = function(canvas) {
+		for(var i = 0; i < this.components.length; i++) {
             this.components[i].draw(canvas);
         }
-    };
+	};
 
+	this.drawVertical = function(canvas, translation) {
+		if(this.arrangement.justify == 'left') {
+			translation.x += this.arrangement.margin;
+		}
+		else if(this.arrangement.justify == 'right') {
+			translation.x += this.width - this.arrangement.margin;
+		}
+		
+		for(var i = 0; i < this.components.length; i++) {
+			var object = this.components[i];
+			
+			translation.y += this.arrangement.spacing;
+			if(this.arrangement.justify == 'right') {
+				object.x = translation.x - object.width;
+			}
+			else {
+				object.x = translation.x;
+			}
+			object.y = translation.y;
+			
+			var box = object.getRealBoundingBox();
+			if(Util.boxesIntersect(box, this.getRealBoundingBox())) {
+				object.draw(canvas);
+			}
+			
+			translation.y += object.height;
+		}
+	};
+	
+	this.drawHorizontal = function(canvas, translation) {
+		if(this.arrangement.justify == 'top') {
+			translation.y += this.arrangement.margin;
+		}
+		else if(this.arrangement.justify == 'bottom') {
+			translation.y += this.height - this.arrangement.margin;
+		}
+		
+		for(var i = 0; i < this.components.length; i++) {
+			var object = this.components[i];
+			
+			translation.x += this.arrangement.spacing;
+			object.x = translation.x;
+			if(this.arrangement.justify == 'bottom') {
+				object.y = translation.y - object.height;
+			}
+			else {
+				object.y = translation.y;
+			}
+			
+			var box = object.getRealBoundingBox();
+			if(Util.boxesIntersect(box, this.getRealBoundingBox())) {
+				object.draw(canvas);
+			}
+			
+			translation.x += object.width;
+		}
+	}
+	
     this.allowDrop = function(component) {
         return false;
     };
