@@ -22,7 +22,8 @@ var h = new ClusterBox(0, 0, '#229922', 0);
 
 console.log(c.toString());
 
-var s = new ScrollingWindow(40, 40, 400, 430, false, true);
+//var s = new ScrollingWindow(40, 40, 400, 430, false, true);
+var s = new ScrollingWindow(40, 40, 400, 200, false, true);
 s.addComponent(c);
 s.addComponent(d);
 s.addComponent(e);
@@ -32,9 +33,22 @@ s.addComponent(h);
 
 console.log(s.toString());
 
-var t = new ScrollingWindow(460, 40, 400, 430, false, true);
-t.shout = true;
+//var t = new ScrollingWindow(460, 40, 400, 430, false, true);
+var t = new ScrollingWindow(40, 260, 400, 200, false, true);
+//t.shout = true;
 
 canvas.addComponent(s);
 canvas.addComponent(t);
+
+canvas.arrangement = {
+	margin: 0,
+	spacing: 0,
+	tiling: 'vertical',
+	stretch: 'full',
+	fill: 'off',
+	justify: 'left'
+}
+//s.flex = 1;
+//t.flex = 1;
+
 canvas.drawCanvas();

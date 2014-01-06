@@ -10,6 +10,7 @@ function Component() {
 	this.visible = true;
 	this.type = 'component';
 	this.parent = null;
+	this.flex = 0;
 	
 	this.draw = function(canvas) {
 		console.error('Cannot draw ' + this.type);

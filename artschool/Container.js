@@ -67,17 +67,28 @@ function Container() {
 			translation.x += this.width - this.arrangement.margin;
 		}
 		
-		this.setWidth = -1;
+		var setWidth = -1;
 		if(this.arrangement.stretch == 'max') {
 			for(var i = 0; i < this.components.length; i++) {
 				var object = this.components[i];
-				if(object.width > this.setWidth) {
-					this.setWidth = object.width;
+				if(object.width > setWidth) {
+					setWidth = object.width;
 				}
 			}
 		}
 		else if(this.arrangement.stretch == 'full') {
-			this.setWidth = this.width - 2 * this.arrangement.margin;
+			setWidth = this.width - 2 * this.arrangement.margin;
+		}
+		
+		var flexing = false;
+		var totalFlex = 0;
+		if(this.arrangement.fill == 'flex') {
+			flexing = true;
+			
+			for(var i = 0; i < this.components.length; i++) {
+				var object = this.components[i];
+				totalFlex += object.flex;
+			}
 		}
 		
 		for(var i = 0; i < this.components.length; i++) {
@@ -92,14 +103,23 @@ function Container() {
 			}
 			object.y = translation.y;
 			
-			if(this.setWidth > 0) {
-				object.stretchTo(this.setWidth, object.height);
+			if(flexing && object.flex > 0) {
+				var setHeight = Math.floor((object.flex / totalFlex) * this.height);
+				if(setWidth > 0) {
+					object.stretchTo(setWidth, setHeight);
+				}
+				else {
+					object.stretchTo(object.width, setHeight);
+				}
+			}
+			else if(setWidth > 0) {
+				object.stretchTo(setWidth, object.height);
 			}
 			
-			var box = object.getRealBoundingBox();
+			/*var box = object.getRealBoundingBox();
 			if(Util.boxesIntersect(box, this.getRealBoundingBox())) {
 				object.draw(canvas);
-			}
+			}*/
 			
 			translation.y += object.height;
 		}

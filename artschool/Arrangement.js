@@ -1,9 +1,9 @@
 function Arrangement() {
     // margin is distance from the wall
-	margin = 10,
+	margin = 10;
 	
 	// spacing is between elements
-	spacing = 10,
+	spacing = 10;
 	
 	// justify can be
 	//  for vertical
@@ -12,17 +12,22 @@ function Arrangement() {
 	//  for horizontal
 	//   - top
 	//   - bottom
-	justify = 'left',
+	justify = 'left';
 	
 	// tiling can be
 	//  - vertical
 	//  - horizontal
 	//  - free
-	tiling = 'vertical',
+	tiling = 'vertical';
 	
 	// stretch can be
 	//  - none
 	//  - full
 	//  - max
-	stretch = 'none'
+	stretch = 'none';
+	
+	// fill can be
+	//  - none
+	//  - flex
+	fill = 'flex';
 };
