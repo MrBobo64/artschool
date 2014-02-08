@@ -134,16 +134,15 @@ var Canvas = Container.extend({
         for(var i = 0; i < draggables.length; i++) {
             var object = draggables[i];
             var box = object.getRealBoundingBox();
-
-			console.log("trying " + box.toString());
-			console.log("is (" + p.x + ", " + p.y + ") in " + box.toString());
-            if(Util.pointInBoundingBox(p, box)) {
+			
+            if(Util.pointInBoundingBox(p, box)) {			
 				if(object.canEscapeParent()) {
+					var realCoords = object.getRealCoordinates();
+				
 					this.dragData.dragParent = object.getParent();
 					this.dragData.dragParent.removeComponent(object);
 					this.addComponent(object);
 					
-					var realCoords = object.getRealCoordinates();
 					object.setX(realCoords.x);
 					object.setY(realCoords.y);
 					
