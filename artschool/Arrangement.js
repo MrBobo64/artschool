@@ -1,33 +1,11 @@
 function Arrangement() {
-    // margin is distance from the wall
-	margin = 10;
+    this.width = -1;
+	this.minWidth = -1;
+	this.maxWidth = -1;
 	
-	// spacing is between elements
-	spacing = 10;
+	this.height = -1;
+	this.minHeight = -1;
+	this.maxHeight = -1;
 	
-	// justify can be
-	//  for vertical
-	//   - left
-	//   - right
-	//  for horizontal
-	//   - top
-	//   - bottom
-	justify = 'left';
-	
-	// tiling can be
-	//  - vertical
-	//  - horizontal
-	//  - free
-	tiling = 'vertical';
-	
-	// stretch can be
-	//  - none
-	//  - full
-	//  - max
-	stretch = 'none';
-	
-	// fill can be
-	//  - none
-	//  - flex
-	fill = 'flex';
+	this.flex = 1;
 };

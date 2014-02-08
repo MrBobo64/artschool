@@ -3,52 +3,39 @@
  * Main, as it were
  */
 
-/*var component = new Component();
-var container = new Container();
-
-console.log(component.toString());
-console.log(container.toString());
-
-container.addComponent(component);*/
+ArtSchool = function() {
+	this.canvas = null;
+};
 
 var canvas = new Canvas(document.getElementById('d'));
 
-var c = new ClusterBox(0, 0, '#22FF22', 0);
-var d = new ClusterBox(0, 0, '#22DD22', 0);
-var e = new ClusterBox(0, 0, '#22BB22', 0);
-var f = new ClusterBox(0, 0, '#229922', 0);
-var g = new ClusterBox(0, 0, '#229922', 0);
-var h = new ClusterBox(0, 0, '#229922', 0);
+ArtSchool.canvas = canvas;
 
-console.log(c.toString());
+var c = new Just('#22FF22');
+var d = new Just('#22DD22');
+var e = new Just('#22BB22');
+var f = new Just('#22AA22');
+var g = new Just('#229922');
+var h = new Just('#228822');
 
-//var s = new ScrollingWindow(40, 40, 400, 430, false, true);
-var s = new ScrollingWindow(40, 40, 400, 200, false, true);
-s.addComponent(c);
-s.addComponent(d);
-s.addComponent(e);
-s.addComponent(f);
-s.addComponent(g);
-s.addComponent(h);
+var t = new Tiling();
+var panel = new Panel(t);
+panel.setWidth(400);
+panel.setHeight(400);
 
-console.log(s.toString());
+panel.addComponent(c);
+panel.addComponent(d);
+panel.addComponent(e);
+panel.addComponent(f);
+panel.addComponent(g);
+panel.addComponent(h);
 
-//var t = new ScrollingWindow(460, 40, 400, 430, false, true);
-var t = new ScrollingWindow(40, 260, 400, 200, false, true);
-//t.shout = true;
+//canvas.addComponent(panel);
 
+var s = new ScrollingWindow(true, panel);
+s.setWidth(200);
+s.setHeight(200);
+//console.log(s.toString());
 canvas.addComponent(s);
-canvas.addComponent(t);
-
-canvas.arrangement = {
-	margin: 0,
-	spacing: 0,
-	tiling: 'vertical',
-	stretch: 'full',
-	fill: 'off',
-	justify: 'left'
-}
-//s.flex = 1;
-//t.flex = 1;
 
 canvas.drawCanvas();

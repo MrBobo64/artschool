@@ -1,261 +1,136 @@
-/* ScrollingWindow extends Container */
-// Needs object coordinating how to place items inside, right now, going vertically
-function ScrollingWindow(x, y, width, height, scrollHorizontal, scrollVertical) {
-    //this.prototype = new Container();
-    //this.prototype.constructor = ScrollingWindow;
-    
-    Container.call(this);
-    //console.log("ScrollingWindow Constructor");
-    
-    this.shout = false;
-    
-    this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
+var ScrollingWindow = Component.extend({
+	init: function(drawFrame, contentComponent) {
+		this._super();
+		
+		this.scrollX = 0;
+		this.scrollY = 0;
+		
+		this.hScrollbar = new Scrollbar(this, false);
+	    this.vScrollbar = new Scrollbar(this, true);
+		
+		this.setType('scrollingwindow');
+		
+		this.content = contentComponent;
+		
+		this.drawFrame = drawFrame;
+	},
 	
-	this.scrollX = 0;
-	this.scrollY = 0;
+	adjustScrollbars: function() {
+		this.hScrollbar.setY(this.getHeight() - this.hScrollbar.getHeight());
+		this.vScrollbar.setX(this.getWidth() - this.vScrollbar.getWidth());
+	},
 	
-	//this.justify = 'left';
-	//this.margin = 10;
-	//this.spacing = 10;
+	setWidth: function(width) {
+		this._super(width);
+		
+		this.adjustScrollbars();
+	},
 	
-	this.arrangement = new Arrangement();
-	this.arrangement.margin = 10;
-	this.arrangement.spacing = 10;
-	this.arrangement.tiling = 'vertical';
-	this.arrangement.justify = 'left';
-	this.arrangement.stretch = 'max';
+	setHeight: function(height) {
+		this._super(height);
+		
+		this.adjustScrollbars();
+	},
 	
+	getContent: function() {
+		return this.content;
+	},
 	
-	this.horizontalScrollbar = null;
-	this.verticalScrollbar = null;
+	setContent: function(contentComponent) {
+		this.content = contentComponent;
+	},
 	
-	if(scrollHorizontal) {
-	    this.horizontalScrollbar = new Scrollbar(this, false);
-		this.horizontalScrollbar.x = this.horizontalScrollbar.fatness + 2;
-		this.horizontalScrollbar.y = this.height - this.horizontalScrollbar.fatness - 2;
-	}
-	if(scrollVertical) {
-	    this.verticalScrollbar = new Scrollbar(this, true);
-		this.verticalScrollbar.x = this.width - this.verticalScrollbar.fatness - 2;
-		this.verticalScrollbar.y = this.verticalScrollbar.fatness;
-	}
+	drawScrollbars: function(context) {
+		var hImage = this.hScrollbar.draw();
+		var vImage = this.vScrollbar.draw();
+		
+		context.putImageData(hImage, this.hScrollbar.getX(), this.hScrollbar.getY());
+		context.putImageData(vImage, this.vScrollbar.getX(), this.vScrollbar.getY());
+	},
 	
-	this.draggable = false;
-	this.dragObject = null;
-    
-    this.type = 'scrollingwindow';
-    
-    this.drawScrollbars = function(canvas) {
-        if(this.horizontalScrollbar) {
-            this.horizontalScrollbar.draw(canvas);
-        }
-        if(this.verticalScrollbar) {
-            this.verticalScrollbar.draw(canvas);
-        }
-    };
+	draw: function() {
+		var context = this.getContext();
+		context.save();
+		
+		context.lineWidth = 0;
+		context.rect(0, 0, this.getWidth(), this.getHeight());
+		context.stroke();
+		context.clip();
+		
+		// This could easily not work at all
+		// Does putImageData have the concept of putting data outside the range
+		// of the destination (aka ignore it)
+		// use dirty if its an issue
+		context.putImageData(this.getContent().draw(), -scrollX, -scrollY);
+		
+		this.drawScrollbars(context);
+		
+		context.restore();
+		
+		if(this.drawFrame) {
+			context.lineWidth = 1;
+			//if(this.isDropHighlighted()) {
+			//	context.strokeStyle = '#FFDD50';
+			//}
+			//else {
+				context.strokeStyle = '#000000';
+			//}
+			context.rect(0, 0, this.getWidth(), this.getHeight());
+			context.stroke();
+		}
+		
+		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
+	},
+	
+	allowDrop: function(component) {
+        return false;
+    },
 
-    // Draw frame
-    //  - Draw a special color for highlight
-    //  - Frame provides clip for insides of this window
-    this.drawFrame = function(canvas, shouldClip) {
-        var context = canvas.getContext();
-
-        context.lineWidth = 1;
-        if(this.highlighted) {
-            context.strokeStyle = '#FFDD50';
-        }
-        else {
-            context.strokeStyle = '#000000';
-        }
-        context.rect(0, 0, this.width, this.height);
-        context.stroke();
-        
-        if(shouldClip) {
-            context.clip();
-        }
-    };
-
-	this.superDraw = this.draw;
-    this.draw = function(canvas) {
-        if(this.visible) {
-            var context = canvas.getContext();
-        
-            context.save();
-            
-            context.translate(this.x, this.y);
-            
-            // TODO: CHANGE IF NOT STRICTLY NECESSARY
-            context.clearRect(0, 0, this.width, this.height);
-            
-            //this.drawScrollbars(canvas);
-            this.drawFrame(canvas, true);
-			
-			this.superDraw(canvas, {x:-this.scrollX, y:-this.scrollY});
-
-            /*var translation = {x: 0, y:0};
-            translation.x = -this.scrollX;
-            translation.y = -this.scrollY;
-            
-            if(this.justify == 'left') {
-                translation.x += this.margin;
-            }
-            else if(this.justify == 'right') {
-                translation.x += -this.margin;
-            }
-            
-            for(var i = 0; i < this.components.length; i++) {
-                var object = this.components[i];
-                
-                translation.y += this.spacing;
-                object.x = translation.x;
-                object.y = translation.y;
-                
-                var box = object.getRealBoundingBox();
-                if(Util.boxesIntersect(box, this.getRealBoundingBox())) {
-                    object.draw(canvas);
-                }
-                
-                translation.y += object.height;
-            }*/
-            
-			this.drawScrollbars(canvas);
-            this.drawFrame(canvas, false);
-            
-            context.restore();
-        }
-    };
-
-    this.dragScrollbars = function(p) {
-        if(this.verticalScrollbar) {
-            var box = this.verticalScrollbar.getBoundingBox();
-            if(Util.pointInBoundingBox(p, box)) {
-                return this.verticalScrollbar.getDragObject(p);
-            }
-        }
-        else if(this.horizontalScrollbar) {
-            var box = this.horizontalScrollbar.getBoundingBox();
-            if(Util.pointInBoundingBox(p, box)) {
-                return this.horizontalScrollbar.getDragObject(p);
-            }
-        }
-        
-        return null;
-    }
-
-    this.getDragObject = function(p) {
-        var innerPoint = {
-            x: p.x - this.x,
-            y: p.y - this.y
-        }
-        
-        var dragScrollbar = this.dragScrollbars(innerPoint);
-        if(dragScrollbar) {
-            this.dragObject = dragScrollbar;
-            return this;
-        }
-        
-        for(var i = 0; i < this.components.length; i++) {
-            var object = this.components[i];
-            var box = object.getBoundingBox();
-
-            if(Util.pointInBoundingBox(innerPoint, box)) {
-                var dragObject = object.getDragObject(innerPoint);
-                if(dragObject) {
-                    if(dragObject.willEscapeParent()) {
-                        // Give the object its real coordinates
-                        var p = dragObject.getRealCoordinates();
-                        dragObject.x = p.x;
-                        dragObject.y = p.y;
-                        
-                        dragObject.parent = null;
-                        this.removeComponentAtIndex(i);
-                        
-                        this.checkScrollbars();
-                        return dragObject;
-                    }
-                    else {
-                        this.dragObject = dragObject;
-                        return this;
-                    }
-                }
-            }
-        }
-        
-        return null;
-    };
-
-    this.drag = function(dx, dy) {
-        if(this.dragObject) {
-            this.dragObject.drag(dx, dy);
-        }
-    };
-
-    this.allowDrop = function(object) {
-        return true;
-    };
-
-    this.acceptDrop = function(object) {
-        this.addComponent(object);
+    acceptDrop: function(component) {
+        this.setContent(component);
         this.checkScrollbars();
         
-        console.log(this.components);
         return true;
-    };
+    },
 
-    this.setDropHighlight = function(canvas) {
-        if(!this.hightlighted) {
-            this.highlighted = true;
-            this.redraw(canvas);
-        }
-    };
-
-    this.removeDropHighlight = function(canvas) {
-        if(this.highlighted) {
-            this.highlighted = false;
-            this.redraw(canvas);
-        }
-    };
-
-    this.checkScrollbars = function() {
-        if(this.verticalScrollbar) {
-            this.scrollVertical(this.verticalScrollbar.y - this.verticalScrollbar.fatness);
-        }
-        
-        if(this.horizontalScrollbar) {
-        
-        }
-    }
-
-    this.scrollVertical = function(y) {
-        if(this.verticalScrollbar) {
-            // GET CAN THIS INFO AN ALL ADD/REMOVE instead of recalculating
-            var fullHeight = 0;
-            for(var i = 0; i < this.components.length; i++) {
-                fullHeight += this.arrangement.spacing;
-                fullHeight += this.components[i].height;
-            }
-            fullHeight += this.arrangement.spacing;
-            
-            // Adjust actually scrolling distance by what is blocked off by scrollbar itself
-            // accounting also for margins
-            var adjust = this.verticalScrollbar.length + 2 * this.verticalScrollbar.fatness;
-            var scrollHeight = this.height - adjust;
-			
-            if(fullHeight > this.height) {
-                this.scrollY = y / scrollHeight * (fullHeight-scrollHeight-adjust);
-            }
-            else {
-                this.scrollY = 0;
-                //this.verticalScrollbar.visible = false;
-            }
-        }
-    };
-
-    this.scrollHorizontal = function(x) {
-        // potato
-    };
-}
-//ScrollingWindow.prototype = new Container();
+    checkScrollbars: function() {
+		this.scrollVertical(this.vScrollbar.getY());// - this.vScrollbar.fatness);
+		this.scrollHorizontal(this.hScrollbar.getX());
+    },
+	
+	scrollVertical: function(y) {
+		// GET CAN THIS INFO AN ALL ADD/REMOVE instead of recalculating
+		var fullHeight = this.getContent().getHeight();
+		
+		// Adjust actually scrolling distance by what is blocked off by scrollbar itself
+		// accounting also for margins
+		var adjust = this.vScrollbar.getHeight();
+		var scrollHeight = this.getHeight() - adjust;
+		
+		if(fullHeight > this.getHeight()) {
+			this.scrollY = y / scrollHeight * (fullHeight-scrollHeight-adjust);
+		}
+		else {
+			this.scrollY = 0;
+			//this.verticalScrollbar.visible = false;
+		}
+    },
+	
+	scrollHorizontal: function(x) {
+		// GET CAN THIS INFO AN ALL ADD/REMOVE instead of recalculating
+		var fullWidth = this.getContent().getWidth();
+		
+		// Adjust actually scrolling distance by what is blocked off by scrollbar itself
+		// accounting also for margins
+		var adjust = this.hScrollbar.getWidth();
+		var scrollWidth = this.getWidth() - adjust;
+		
+		if(fullWidth > this.getWidth()) {
+			this.scrollX = x / scrollWidth * (fullWidth-scrollWidth-adjust);
+		}
+		else {
+			this.scrollX = 0;
+			//this.horizontalScrollbar.visible = false;
+		}
+	}
+});

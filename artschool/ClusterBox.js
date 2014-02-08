@@ -1,3 +1,5 @@
+
+
 /* ClusterBox extends Shape */
 function ClusterBox(x, y, color, depth) {
     //this.prototype = new Shape();

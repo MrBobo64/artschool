@@ -1,89 +1,70 @@
-/* Scrollbar extends Shape */
-function Scrollbar(scrollingWindow, vertical) {
-    //this.prototype = new Shape();
-    //this.prototype.constructor = Scrollbar;
-
-    Shape.call(this);
-    //console.log("Scrollbar Constructor");
-
-    this.scrollingWindow = scrollingWindow;
-	this.vertical = vertical;
+var Scrollbar = Component.extend({
+	init: function(scrollingWindow, vertical) {
+		this._super();
+		
+		this.scrollingWindow = scrollingWindow;
+		this.vertical = vertical;
+		
+		this.length = 30;
+		this.fatness = 8;
+		
+		if(vertical) {
+			this.setWidth(this.fatness);
+			this.setHeight(this.length);
+		}
+		else {
+			this.setWidth(this.length);
+			this.setHeight(this.fatness);
+		}
+		
+		this.setType('scrollbar' + (this.vertical ? '(v)' : '(h)'));
+		
+		ArtSchool.canvas.registerDraggable(this);
+	},
 	
-	this.length = 30;
-	this.fatness = 8;
+	isDraggable: function() {
+		return true;
+	},
 	
-	this.draggable = true;
-	this.canEscapeParent = false;
+	canEscapeParent: function() {
+		return false;
+	},
 	
-	if(vertical) {
-		this.width = this.fatness;
-		this.height = this.length;
-	}
-	else {
-		this.width = this.length;
-		this.height = this.fatness;
-	}
+	draw: function() {
+		if(!this.cachedImage) {
+			var context = this.getContext();
+			context.clearRect(0, 0, this.getWidth(), this.getHeight());
+			context.rect(0, 0, this.getWidth(), this.getHeight());
+			context.stroke();
+			
+			this.cachedImage = context.getImageData(0, 0, this.getWidth(), this.getHeight());
+		}
+		
+		return this.cachedImage;
+	},
 	
-	this.highlighted = false;
-	this.type = 'scrollbar' + (this.vertical ? '(v)' : '(h)');
-
-    this.draw = function(canvas) {
-        if(this.visible) {
-            var context = canvas.getContext();
-            
-            context.save();
-            
-            context.translate(this.x, this.y);
-            
-            context.beginPath();
-            context.moveTo(0, 0);
-            if(this.vertical) {
-                context.lineTo(0, this.length);
-            }
-            else {
-                context.lineTo(this.length, 0);
-            }
-            context.lineWidth = this.fatness;
-            context.lineCap = 'round';
-            
-            context.strokeStyle = '#777777';
-            context.stroke();
-            
-            context.restore();
-        }
-    };
-
-    this.getBoundingBox = function() {
+	drag: function(dx, dy) {
         if(this.vertical) {
-            return new Box(this.x - this.fatness/2, this.y, this.width, this.height);
+            this.setY(this.getY() + dy);
+            if(this.getY() < 0) {
+                this.setY(0);
+            }
+            if(this.getY() > this.scrollingWindow.getHeight() - this.getHeight()) {
+                this.setY(this.scrollingWindow.getHeight() - this.getHeight);
+            }
+            
+            this.scrollingWindow.scrollVertical(this.getY());
         }
         else {
-            return new Box(this.x, this.y - this.fatness/2, this.width, this.height);
-        }
-    };
-
-    this.drag = function(dx, dy) {
-        if(this.vertical) {
-            this.y += dy;
-            if(this.y < this.fatness) {
-                this.y = this.fatness;
+            this.setX(this.getX() + dx);
+            if(this.getX() < 0) {
+                this.setX(0);
             }
-            if(this.y > this.scrollingWindow.height - this.length - this.fatness) {
-                this.y = this.scrollingWindow.height - this.length - this.fatness;
+            if(this.getX() > this.scrollingWindow.getWidth() - this.getWidth()) {
+                this.setX(this.scrollingWindow.getWidth() - this.getWidth());
             }
             
-            this.scrollingWindow.scrollVertical(this.y - this.fatness);
+            this.scrollingWindow.scrollHorizontal(this.getX());
         }
-        else {
-            this.x += dx;
-            if(this.x < this.fatness) {
-                this.x = this.fatness;
-            }
-            if(this.x > this.scrollingWindow.width - this.fatness) {
-                this.x = this.scrollingWindow.width - this.fatness;
-            }
-            
-            this.scrollingWindow.scrollHorizontal(this.x - this.fatness);
-        }
-    };
-}
+    }
+});
