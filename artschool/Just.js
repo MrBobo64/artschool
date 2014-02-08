@@ -5,6 +5,16 @@ var Just = Component.extend({
 		
 		this.setWidth(100);
 		this.setHeight(40);
+		
+		ArtSchool.canvas.registerDraggable(this);
+	},
+	
+	isDraggable: function() {
+		return true;
+	},
+	
+	canEscapeParent: function() {
+		return true;
 	},
 	
 	draw: function() {

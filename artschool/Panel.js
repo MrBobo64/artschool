@@ -17,6 +17,18 @@ var Panel = Container.extend({
 		this.setType('panel' + (this.tiling.tiling));
 	},
 	
+	/*removeComponentAtIndex: function(component) {
+		this._super(component);
+		
+		this.getContext().clearRect(0, 0, this.getWidth(), this.getHeight());
+	},
+	
+	removeComponent: function(component) {
+		this._super(component);
+		
+		this.getContext().clearRect(0, 0, this.getWidth(), this.getHeight());
+	},*/
+	
 	getTiling: function() {
 		return this.tiling;
 	},
@@ -293,18 +305,15 @@ var Panel = Container.extend({
 			}
 		}
 		
+		this.makeNewContext();
 		var image = this._super();
 		
 		var context = this.getContext();
-		context.clearRect(0, 0, this.getWidth(), this.getHeight());
-		context.putImageData(image, 0, 0);
-		
-		context.lineWidth = 1;
-		context.strokeStyle = '#000000';
+		/*context.lineWidth = 1;
+		context.strokeStyle = '#FF0000';
 		context.rect(0, 0, this.getWidth(), this.getHeight());
-		context.stroke();
+		context.stroke();*/
 		
-		//TODO: could put background here
 		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
 	}
 });

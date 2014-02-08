@@ -9,6 +9,39 @@ var Component = Class.extend({
 		this.parent = null;
 		
 		this.arrangement = new Arrangement();
+		
+		this.watchers = [];
+	},
+	
+	getWatchers: function() {
+		return this.watchers;
+	},
+	
+	addWatcher: function(watcher) {
+		this.getWatchers().push(watcher);
+	},
+	
+	removeWatcher: function(watcher) {
+		var watchers = this.getWatchers();
+		for(var i = 0; i < watchers.length; i++) {
+			if(watcher == watchers[i]) {
+				watchers.splice(i, 1);
+				break;
+			}
+		}
+	},
+	
+	notifyWatchers: function() {
+		var watchers = this.getWatchers();
+		for(var i = 0; i < watchers.length; i++) {
+			var w = watchers[i];
+			
+			w.watchChanged(this);
+		}
+	},
+	
+	watchChanged: function(component) {
+	
 	},
 	
 	getParent: function() {
@@ -32,7 +65,13 @@ var Component = Class.extend({
 	},
 	
 	setX: function(x) {
+		var notify = (this.x == x);
+	
 		this.x = x;
+		
+		if(notify === true) {
+			this.notifyWatchers();
+		}
 	},
 	
 	getY: function() {
@@ -40,7 +79,13 @@ var Component = Class.extend({
 	},
 	
 	setY: function(y) {
+		var notify = (this.y == y);
+		
 		this.y = y;
+		
+		if(notify === true) {
+			this.notifyWatchers();
+		}
 	},
 	
 	getWidth: function() {
@@ -51,7 +96,13 @@ var Component = Class.extend({
 		if(width < 0) {
 			console.error("impossible width");
 		}
+		var notify = (this.width == width);
+		
 		this.width = width;
+		
+		if(notify === true) {
+			this.notifyWatchers();
+		}
 	},
 	
 	getHeight: function() {
@@ -62,7 +113,13 @@ var Component = Class.extend({
 		if(height < 0) {
 			console.error("impossible height");
 		}
+		var notify = (this.height == height);
+		
 		this.height = height;
+		
+		if(notify === true) {
+			this.notifyWatchers();
+		}
 	},
 	
 	getType: function() {
@@ -94,8 +151,8 @@ var Component = Class.extend({
 	},
 	
 	drag: function(dx, dy) {
-		this.setX(this.getX() += dx);
-		this.setY(this.getY() += dy);
+		this.setX(this.getX() + dx);
+		this.setY(this.getY() + dy);
 	},
 	
 	getRealCoordinates: function() {
@@ -156,6 +213,15 @@ var Component = Class.extend({
 	
 	getContext: function() {
 		return this.getCanvas().getContext('2d');
+	},
+	
+	getNewContext: function() {
+		this.canvas = null;
+		return this.getContext();
+	},
+	
+	makeNewContext: function() {
+		this.getNewContext();
 	},
 	
 	draw: function() {

@@ -50,7 +50,7 @@ var Scrollbar = Component.extend({
                 this.setY(0);
             }
             if(this.getY() > this.scrollingWindow.getHeight() - this.getHeight()) {
-                this.setY(this.scrollingWindow.getHeight() - this.getHeight);
+                this.setY(this.scrollingWindow.getHeight() - this.getHeight());
             }
             
             this.scrollingWindow.scrollVertical(this.getY());

@@ -32,10 +32,14 @@ panel.addComponent(h);
 
 //canvas.addComponent(panel);
 
+//var c = new ClusterBox(400, 400);
+
 var s = new ScrollingWindow(true, panel);
 s.setWidth(200);
 s.setHeight(200);
-//console.log(s.toString());
+
+panel.setWidth(s.getWidth());
+
 canvas.addComponent(s);
 
 canvas.drawCanvas();

@@ -1,3 +1,5 @@
+// TODO: make this container and only allow one object?
+
 var ScrollingWindow = Component.extend({
 	init: function(drawFrame, contentComponent) {
 		this._super();
@@ -11,6 +13,8 @@ var ScrollingWindow = Component.extend({
 		this.setType('scrollingwindow');
 		
 		this.content = contentComponent;
+		contentComponent.setParent(this);
+		contentComponent.addWatcher(this);
 		
 		this.drawFrame = drawFrame;
 	},
@@ -37,7 +41,21 @@ var ScrollingWindow = Component.extend({
 	},
 	
 	setContent: function(contentComponent) {
+		if(this.content) {
+			this.content.removeWatcher(this);
+		}
+	
 		this.content = contentComponent;
+		contentComponent.setParent(this);
+		contentComponent.addWatcher(this);
+	},
+	
+	watchChanged: function(component) {
+		if(component != this.content) {
+			console.log("scrollwindow watching something not its content");
+		}
+
+		this.checkScrollbars();
 	},
 	
 	drawScrollbars: function(context) {
@@ -49,19 +67,27 @@ var ScrollingWindow = Component.extend({
 	},
 	
 	draw: function() {
-		var context = this.getContext();
-		context.save();
+		//var context = this.getNewContext();
+		//context.save();
 		
-		context.lineWidth = 0;
-		context.rect(0, 0, this.getWidth(), this.getHeight());
-		context.stroke();
-		context.clip();
+		//context.lineWidth = 0;
+		//context.rect(0, 0, this.getWidth(), this.getHeight());
+		//context.stroke();
+		//context.clip();
+		
+		this.getContent().draw();
+		var portion = this.getContent().getContext().getImageData(this.scrollX, this.scrollY, this.getWidth(), this.getHeight());
+
+		var context = this.getNewContext();
+		context.putImageData(portion, 0, 0);
 		
 		// This could easily not work at all
 		// Does putImageData have the concept of putting data outside the range
 		// of the destination (aka ignore it)
 		// use dirty if its an issue
-		context.putImageData(this.getContent().draw(), -scrollX, -scrollY);
+		//context.putImageData(this.getContent().draw(), -this.scrollX, -this.scrollY);
+		//context.putImageData(this.getContent().draw(), this.getContent().getX(), this.getContent().getY());
+		// TODO: mabye manually place correct porion here!!!!
 		
 		this.drawScrollbars(context);
 		
@@ -83,23 +109,29 @@ var ScrollingWindow = Component.extend({
 	},
 	
 	allowDrop: function(component) {
-        return false;
+        return this.getContent().allowDrop(component);
     },
 
     acceptDrop: function(component) {
-        this.setContent(component);
-        this.checkScrollbars();
-        
-        return true;
+        return this.getContent().acceptDrop(component);
     },
-
+	
+	setDropHighlight: function() {
+		this.getContent().setDropHighlight();
+	},
+	
+	removeDropHighlight: function() {
+		this.getContent().setDropHighlight();
+	},
+	
     checkScrollbars: function() {
 		this.scrollVertical(this.vScrollbar.getY());// - this.vScrollbar.fatness);
 		this.scrollHorizontal(this.hScrollbar.getX());
     },
 	
 	scrollVertical: function(y) {
-		// GET CAN THIS INFO AN ALL ADD/REMOVE instead of recalculating
+		this.getContent().removeWatcher(this);
+	
 		var fullHeight = this.getContent().getHeight();
 		
 		// Adjust actually scrolling distance by what is blocked off by scrollbar itself
@@ -108,16 +140,26 @@ var ScrollingWindow = Component.extend({
 		var scrollHeight = this.getHeight() - adjust;
 		
 		if(fullHeight > this.getHeight()) {
-			this.scrollY = y / scrollHeight * (fullHeight-scrollHeight-adjust);
+			this.scrollY = Math.round(y / scrollHeight * (fullHeight-scrollHeight-adjust));
 		}
 		else {
 			this.scrollY = 0;
 			//this.verticalScrollbar.visible = false;
 		}
+		
+		
+		// SIGNIFICANT
+		this.getContent().setY(this.getY() - this.scrollY);
+		
+		//TODO: don't do this
+		ArtSchool.canvas.redrawDirty(this.getRealBoundingBox());
+		
+		this.getContent().addWatcher(this);
     },
 	
 	scrollHorizontal: function(x) {
-		// GET CAN THIS INFO AN ALL ADD/REMOVE instead of recalculating
+		this.getContent().removeWatcher(this);
+	
 		var fullWidth = this.getContent().getWidth();
 		
 		// Adjust actually scrolling distance by what is blocked off by scrollbar itself
@@ -126,11 +168,18 @@ var ScrollingWindow = Component.extend({
 		var scrollWidth = this.getWidth() - adjust;
 		
 		if(fullWidth > this.getWidth()) {
-			this.scrollX = x / scrollWidth * (fullWidth-scrollWidth-adjust);
+			this.scrollX = Math.round(x / scrollWidth * (fullWidth-scrollWidth-adjust));
 		}
 		else {
 			this.scrollX = 0;
 			//this.horizontalScrollbar.visible = false;
 		}
+		
+		this.getContent().setX(this.getX() - this.scrollX);
+		
+		//TODO: don't do this
+		ArtSchool.canvas.redrawDirty(this.getRealBoundingBox());
+		
+		this.getContent().addWatcher(this);
 	}
 });

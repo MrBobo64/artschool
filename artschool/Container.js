@@ -41,14 +41,6 @@ var Container = Component.extend({
     acceptDrop: function(component) {
         return false;
     },
-        
-    setDropHighlight: function() {
-        console.error("Cannot set drop highlight on " + this.getType());
-    },
-
-    removeDropHighlight: function() {
-        console.error("Cannot remove drop highlight on " + this.getType());
-    },
 	
 	draw: function() {
 		var components = this.getComponents();
