@@ -75,6 +75,9 @@ var Component = Class.extend({
 	},
 	
 	getWidth: function() {
+		if(this.width == 0) {
+			return 1;
+		}
 		return this.width;
 	},
 	
@@ -92,6 +95,9 @@ var Component = Class.extend({
 	},
 	
 	getHeight: function() {
+		if(this.height == 0) {
+			return 1;
+		}
 		return this.height;
 	},
 	

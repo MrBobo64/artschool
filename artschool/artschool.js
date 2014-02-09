@@ -21,7 +21,16 @@ ArtSchool.canvas = canvas;
 ///////////////////////////////////////
 // TOP
 ///////////////////////////////////////
-var clusterPanel = new Panel();
+var clusterPanel = new Panel({
+	tiling: {
+		tiling: 'vertical',
+		fill: 'flex',
+		stretch: 'full',
+		spacing: 10,
+		margin: 10
+	}
+});
+
 var hostPanel = new Panel();
 var targetPanel = new Panel();
 
@@ -44,9 +53,9 @@ var topPanel = new Panel({
 	},
 	
 	components: [
-		clusterPanel,
-		hostPanel,
-		targetPanel
+		new ScrollingWindow(clusterPanel),
+		new ScrollingWindow(hostPanel),
+		new ScrollingWindow(targetPanel)
 	]
 });
 
@@ -104,6 +113,13 @@ var e = new Just('#22BB22');
 var f = new Just('#22AA22');
 var g = new Just('#229922');
 var h = new Just('#228822');*/
+
+clusterPanel.addComponent(new Just('#22FF22'));
+clusterPanel.addComponent(new Just('#22DD22'));
+clusterPanel.addComponent(new Just('#22BB22'));
+clusterPanel.addComponent(new Just('#22AA22'));
+clusterPanel.addComponent(new Just('#229922'));
+clusterPanel.addComponent(new Just('#228822'));
 
 canvas.drawCanvas();
 

@@ -68,7 +68,7 @@ var Panel = Container.extend({
 			var a = c.getArrangement();
 			
 			if(a.height < 0) {
-				var newHeight = (a.flex / totalFlex) * totalFlexRoom;
+				var newHeight = Math.round((a.flex / totalFlex) * totalFlexRoom);
 				if(a.minHeight > 0 && newHeight < a.minHeight) {
 					totalFlexRoom -= a.minHeight;
 					totalFlex -= a.flex;
@@ -85,7 +85,7 @@ var Panel = Container.extend({
 			var a = c.getArrangement();
 			
 			if (a.height < 0) {
-				var newHeight = (a.flex / totalFlex) * totalFlexRoom;
+				var newHeight = Math.round((a.flex / totalFlex) * totalFlexRoom);
 				if (a.minHeight > 0 && newHeight < a.minHeight) {
 					newHeight = a.minHeight;
 				}
@@ -120,7 +120,7 @@ var Panel = Container.extend({
 			var a = c.getArrangement();
 			
 			if(a.width < 0) {
-				var newWidth = (a.flex / totalFlex) * totalFlexRoom;
+				var newWidth = Math.round((a.flex / totalFlex) * totalFlexRoom);
 				if(a.minWidth > 0 && newWidth < a.minWidth) {
 					totalFlexRoom -= a.minWidth;
 					totalFlex -= a.flex;
@@ -137,7 +137,7 @@ var Panel = Container.extend({
 			var a = c.getArrangement();
 			
 			if (a.width < 0) {
-				var newWidth = (a.flex / totalFlex) * totalFlexRoom;
+				var newWidth = Math.round((a.flex / totalFlex) * totalFlexRoom);
 				if (a.minWidth > 0 && newWidth < a.minWidth) {
 					newWidth = a.minWidth;
 				}

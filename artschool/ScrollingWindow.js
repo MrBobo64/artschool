@@ -56,7 +56,7 @@ var ScrollingWindow = Component.extend({
 		//context.rect(0, 0, this.getWidth(), this.getHeight());
 		//context.stroke();
 		//context.clip();
-		
+		console.log("SSSSSS: " + this.toString());
 		this.getContent().draw();
 		var portion = this.getContent().getContext().getImageData(this.scrollX, this.scrollY, this.getWidth(), this.getHeight());
 

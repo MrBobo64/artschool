@@ -7,8 +7,8 @@ var Canvas = Container.extend({
 	
 	fixDimensions: function() {
 		if(this.canvasElement.width != window.innerWidth) {
-            this.canvasElement.width = window.innerWidth;
-			this.setWidth(window.innerWidth);
+            this.canvasElement.width = window.innerWidth - 16;
+			this.setWidth(window.innerWidth - 16);
         }
         if(this.canvasElement.height != window.innerHeight) {
             this.canvasElement.height = window.innerHeight;
