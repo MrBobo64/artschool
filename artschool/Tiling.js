@@ -1,9 +1,9 @@
-function Tiling() {
+var Tiling = function(config) {
 	// margin is distance from the wall
-	this.margin = 10;
+	this.margin = config && config.margin || 10;
 	
 	// spacing is between elements
-	this.spacing = 10;
+	this.spacing = config && config.spacing || 10;
 	
 	// justify can be
 	//  for vertical
@@ -12,22 +12,22 @@ function Tiling() {
 	//  for horizontal
 	//   - top
 	//   - bottom
-	this.justify = 'left';
+	this.justify = config && config.justify || 'left';
 	
 	// tiling can be
 	//  - vertical
 	//  - horizontal
 	//  - free
-	this.tiling = 'vertical';
+	this.tiling = config && config.tiling || 'vertical';
 	
 	// stretch can be
 	//  - none
 	//  - full
 	//  - max
-	this.stretch = 'none';
+	this.stretch = config && config.stretch || 'none';
 	
 	// fill can be
 	//  - none
 	//  - flex
-	this.fill = 'none';
+	this.fill = config && config.fill || 'none';
 }

@@ -1,37 +1,9 @@
 var Canvas = Container.extend({
-	init: function(canvasElement) {
-		this._super();
-		this.canvasElement = canvasElement;
-		this.context = canvasElement.getContext('2d');
-		
-		this.setType('canvas');
-		
-		this.dragData = {
-			draggables: [],
-			dragPoint: null,
-			dragObject: null,
-			dragParent: null
-		};
-		
-		var self = this;
-		this.canvasElement.onmousedown = function(m) {
-			self.onMouseDown(m);
-		};
-		this.canvasElement.onmousemove = function(m) {
-			self.onMouseMove(m);
-		};
-		this.canvasElement.onmouseup = function(m) {
-			self.onMouseUp(m);
-		};
-		
-		this.mouseIsDown = false;
-	},
-	
 	getContext: function() {
 		return this.context;
 	},
 	
-	drawCanvas: function() {
+	fixDimensions: function() {
 		if(this.canvasElement.width != window.innerWidth) {
             this.canvasElement.width = window.innerWidth;
 			this.setWidth(window.innerWidth);
@@ -40,6 +12,10 @@ var Canvas = Container.extend({
             this.canvasElement.height = window.innerHeight;
 			this.setHeight(window.innerHeight);
         }
+	},
+	
+	drawCanvas: function() {
+		this.fixDimensions();
 	
 		var image = this.draw();
 		this.getContext().putImageData(image, 0, 0);
@@ -258,5 +234,35 @@ var Canvas = Container.extend({
         else {
             this.dragData.dragObject = null;
         }
-    }
+    },
+	
+	init: function(canvasElement) {
+		this._super();
+		this.canvasElement = canvasElement;
+		this.context = canvasElement.getContext('2d');
+		
+		this.setType('canvas');
+		
+		this.dragData = {
+			draggables: [],
+			dragPoint: null,
+			dragObject: null,
+			dragParent: null
+		};
+		
+		var self = this;
+		this.canvasElement.onmousedown = function(m) {
+			self.onMouseDown(m);
+		};
+		this.canvasElement.onmousemove = function(m) {
+			self.onMouseMove(m);
+		};
+		this.canvasElement.onmouseup = function(m) {
+			self.onMouseUp(m);
+		};
+		
+		this.mouseIsDown = false;
+		
+		this.fixDimensions();
+	}
 });

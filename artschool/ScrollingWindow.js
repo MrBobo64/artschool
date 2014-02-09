@@ -1,24 +1,6 @@
 // TODO: make this container and only allow one object?
 
-var ScrollingWindow = Component.extend({
-	init: function(drawFrame, contentComponent) {
-		this._super();
-		
-		this.scrollX = 0;
-		this.scrollY = 0;
-		
-		this.hScrollbar = new Scrollbar(this, false);
-	    this.vScrollbar = new Scrollbar(this, true);
-		
-		this.setType('scrollingwindow');
-		
-		this.content = contentComponent;
-		contentComponent.setParent(this);
-		contentComponent.addWatcher(this);
-		
-		this.drawFrame = drawFrame;
-	},
-	
+var ScrollingWindow = Component.extend({	
 	adjustScrollbars: function() {
 		this.hScrollbar.setY(this.getHeight() - this.hScrollbar.getHeight());
 		this.vScrollbar.setX(this.getWidth() - this.vScrollbar.getWidth());
@@ -181,5 +163,23 @@ var ScrollingWindow = Component.extend({
 		ArtSchool.canvas.redrawDirty(this.getRealBoundingBox());
 		
 		this.getContent().addWatcher(this);
+	},
+	
+	init: function(contentComponent, config) {
+		this._super(config && config.dimensions || null);
+		
+		this.scrollX = 0;
+		this.scrollY = 0;
+		
+		this.hScrollbar = new Scrollbar(this, false);
+	    this.vScrollbar = new Scrollbar(this, true);
+		
+		this.setType('scrollingwindow');
+		
+		this.content = contentComponent;
+		contentComponent.setParent(this);
+		contentComponent.addWatcher(this);
+		
+		this.frame = new Frame(config && config.frame || null);
 	}
 });

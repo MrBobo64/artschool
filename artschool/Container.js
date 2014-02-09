@@ -1,11 +1,10 @@
-var Container = Component.extend({
-	init: function() {
-		this._super();
-		this.setType('container');
-		this.components = [];
-		this.arrangement = new Arrangement();
-		
-		this.dropHighlighted = false;
+var Container = Component.extend({	
+	getFrame: function() {
+		return this.frame;
+	},
+	
+	setFrame: function(frame) {
+		this.frame = frame;
 	},
 	
 	getComponents: function() {
@@ -43,6 +42,8 @@ var Container = Component.extend({
     },
 	
 	draw: function() {
+		console.log("drawing " + this.toString());
+	
 		var components = this.getComponents();
 		var context = this.getContext();
 		
@@ -51,6 +52,13 @@ var Container = Component.extend({
 			var image = c.draw();
 			
 			context.putImageData(image, c.getX(), c.getY());
+		}
+		
+		if(this.frame && !this.frame.hidden) {
+			context.lineStyle = this.frame.color;
+			context.lineWidth = this.frame.thickness;
+			context.rect(0, 0, this.getWidth(), this.getHeight());
+			context.stroke();
 		}
 		
 		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
@@ -66,5 +74,23 @@ var Container = Component.extend({
 	
 	removeDropHighlight: function() {
 		this.dropHighlighted = false;
+	},
+	
+	// init
+	init: function(config) {
+		this._super(config && config.dimensions || null);
+		this.setType('container');
+		this.components = [];
+		
+		this.dropHighlighted = false;
+		
+		this.arrangement = new Arrangement(config && config.arrangement || null);
+		this.frame = new Frame(config && config.frame || null);
+		
+		if(config && config.components) {
+			for(var i = 0; i < config.components.length; i++) {
+				this.addComponent(config.components[i]);
+			}
+		}
 	}
 });

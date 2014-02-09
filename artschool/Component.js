@@ -1,18 +1,4 @@
 var Component = Class.extend({
-	init: function() {
-		this.x = 0;
-		this.y = 0;
-		this.width = 0;
-		this.height = 0;
-		this.visible = true;
-		this.type = 'component';
-		this.parent = null;
-		
-		this.arrangement = new Arrangement();
-		
-		this.watchers = [];
-	},
-	
 	getWatchers: function() {
 		return this.watchers;
 	},
@@ -227,5 +213,21 @@ var Component = Class.extend({
 	draw: function() {
 		console.error("probably wrong");
 		return this.getContext().getImageData(0, 0, this.getWidth(), this.getHeight()); //?
+	},
+	
+	// init
+	init: function(config) {
+		this.x = config && config.x || 0;
+		this.y = config && config.y || 0;
+		this.width = config && config.width || 0;
+		this.height = config && config.height || 0;
+		this.visible = true;
+		
+		this.type = 'component';
+		this.parent = null;
+		
+		this.arrangement = new Arrangement();
+		
+		this.watchers = [];
 	}
 });

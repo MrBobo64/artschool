@@ -48,8 +48,6 @@ Util = {
 			console.error('no pixel at ' + x + ' ' + y);
 			return;
 		}
-		
-		
 	},
 	
 	drawOn: function(base, image, x, y) {

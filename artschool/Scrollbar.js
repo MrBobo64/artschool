@@ -1,26 +1,4 @@
 var Scrollbar = Component.extend({
-	init: function(scrollingWindow, vertical) {
-		this._super();
-		
-		this.scrollingWindow = scrollingWindow;
-		this.vertical = vertical;
-		
-		this.length = 30;
-		this.fatness = 8;
-		
-		if(vertical) {
-			this.setWidth(this.fatness);
-			this.setHeight(this.length);
-		}
-		else {
-			this.setWidth(this.length);
-			this.setHeight(this.fatness);
-		}
-		
-		this.setType('scrollbar' + (this.vertical ? '(v)' : '(h)'));
-		
-		ArtSchool.canvas.registerDraggable(this);
-	},
 	
 	isDraggable: function() {
 		return true;
@@ -66,5 +44,29 @@ var Scrollbar = Component.extend({
             
             this.scrollingWindow.scrollHorizontal(this.getX());
         }
-    }
+    },
+	
+	// init
+	init: function(scrollingWindow, vertical) {
+		this._super();
+		
+		this.scrollingWindow = scrollingWindow;
+		this.vertical = vertical;
+		
+		this.length = 30;
+		this.fatness = 8;
+		
+		if(vertical) {
+			this.setWidth(this.fatness);
+			this.setHeight(this.length);
+		}
+		else {
+			this.setWidth(this.length);
+			this.setHeight(this.fatness);
+		}
+		
+		this.setType('scrollbar' + (this.vertical ? '(v)' : '(h)'));
+		
+		ArtSchool.canvas.registerDraggable(this);
+	}
 });

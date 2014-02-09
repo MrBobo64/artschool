@@ -1,21 +1,4 @@
 var Panel = Container.extend({
-	init: function(tiling) {
-		this._super();
-		
-		if(!tiling) {
-			this.tiling = new Tiling();
-		}
-		else {
-			this.tiling = tiling;
-		}
-		
-		this.vertical = false;
-		if(this.tiling.tiling == 'vertical') {
-			this.vertical = true;
-		}
-		
-		this.setType('panel' + (this.tiling.tiling));
-	},
 	
 	/*removeComponentAtIndex: function(component) {
 		this._super(component);
@@ -44,7 +27,7 @@ var Panel = Container.extend({
 			var c = components[i];
 			var a = c.getArrangement();
 			
-			if((vertical && a.height < 0) || (!vertical && a.width < 0)) {
+			if((this.vertical && a.height < 0) || (!this.vertical && a.width < 0)) {
 				totalFlex += a.flex;
 			}
 		}
@@ -53,7 +36,7 @@ var Panel = Container.extend({
 	},
 	
 	getTotalFlexRoom: function() {
-		var room = vertical ? this.getHeight() : this.getWidth();
+		var room = this.vertical ? this.getHeight() : this.getWidth();
 		var components = this.getComponents();
 		for(var i = 0; i < components.length; i++) {
 			var c = components[i];
@@ -162,7 +145,7 @@ var Panel = Container.extend({
 					newWidth = a.maxWidth;
 				}
 				
-				c.setx(currentX);
+				c.setX(currentX);
 				c.setHeight(this.getHeight()); //TODO: if stretch
 				c.setWidth(newWidth);
 				
@@ -309,11 +292,25 @@ var Panel = Container.extend({
 		var image = this._super();
 		
 		var context = this.getContext();
-		/*context.lineWidth = 1;
+		context.lineWidth = 1;
 		context.strokeStyle = '#FF0000';
 		context.rect(0, 0, this.getWidth(), this.getHeight());
-		context.stroke();*/
+		context.stroke();
 		
 		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
+	},
+	
+	// init
+	init: function(config) {
+		this._super(config);
+		
+		this.tiling = new Tiling(config && config.tiling || null);
+		
+		this.vertical = false;
+		if(this.tiling.tiling == 'vertical') {
+			this.vertical = true;
+		}
+		
+		this.setType('panel' + (this.tiling.tiling));
 	}
 });
