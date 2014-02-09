@@ -1,3 +1,5 @@
+// ONLY ALLOW ONE CHILD COMPONENT, STRETCH IT OuT?
+
 var Canvas = Container.extend({
 	getContext: function() {
 		return this.context;

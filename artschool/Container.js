@@ -43,10 +43,10 @@ var Container = Component.extend({
 	
 	draw: function() {
 		console.log("drawing " + this.toString());
-	
-		var components = this.getComponents();
+		
 		var context = this.getContext();
 		
+		var components = this.getComponents();
 		for(var i = 0; i < components.length; i++) {
 			var c = components[i];
 			var image = c.draw();

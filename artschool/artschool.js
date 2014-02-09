@@ -3,6 +3,12 @@
  * Main, as it were
  */
 
+ 
+//THOUGHTS: Canvas can extend Panel instead.
+// Canvas and ScrollingWindow can override addComponent to
+// only allow one component at a time.  That was ScrollingWindow
+// is still a container, and Canvas can have layouts.
+// Create BorderedContainer (NWSE, center)
 
 ArtSchool = function() {
 	this.canvas = null;
@@ -21,16 +27,15 @@ var targetPanel = new Panel();
 
 var topPanel = new Panel({
 	tiling: {
-		tiling: "horizontal",
-		fill: "flex",
+		tiling: 'horizontal',
+		fill: 'flex',
 		spacing: 0,
 		margin: 0,
-		stretch: "full"
+		stretch: 'full'
 	},
 	
 	frame: {
-		hidden: false,
-		color: "blue",
+		color: '#0000FF',
 		thickness: 2
 	},
 	
@@ -73,8 +78,9 @@ var bottomPanel = new Panel({
 var mainPanel = new Panel({
 	tiling: {
 		spacing: 0,
-		stretch: "full",
-		fill: "flex"
+		tiling: 'vertical',
+		stretch: 'full',
+		fill: 'flex'
 	},
 	
 	dimensions: {
@@ -97,30 +103,10 @@ var d = new Just('#22DD22');
 var e = new Just('#22BB22');
 var f = new Just('#22AA22');
 var g = new Just('#229922');
-var h = new Just('#228822');
-
-var t = new Tiling();
-var panel = new Panel(t);
-panel.setWidth(400);
-panel.setHeight(400);
-
-panel.addComponent(c);
-panel.addComponent(d);
-panel.addComponent(e);
-panel.addComponent(f);
-panel.addComponent(g);
-panel.addComponent(h);
-
-//canvas.addComponent(panel);
-
-//var c = new ClusterBox(400, 400);
-
-var s = new ScrollingWindow(true, panel);
-s.setWidth(200);
-s.setHeight(200);
-
-panel.setWidth(s.getWidth());
-
-canvas.addComponent(s);*/
+var h = new Just('#228822');*/
 
 canvas.drawCanvas();
+
+//console.log(clusterPanel);
+//console.log(hostPanel);
+//console.log(targetPanel);

@@ -51,7 +51,7 @@ var Component = Class.extend({
 	},
 	
 	setX: function(x) {
-		var notify = (this.x == x);
+		var notify = (this.x != x);
 	
 		this.x = x;
 		
@@ -65,7 +65,7 @@ var Component = Class.extend({
 	},
 	
 	setY: function(y) {
-		var notify = (this.y == y);
+		var notify = (this.y != y);
 		
 		this.y = y;
 		
@@ -82,7 +82,7 @@ var Component = Class.extend({
 		if(width < 0) {
 			console.error("impossible width");
 		}
-		var notify = (this.width == width);
+		var notify = (this.width != width);
 		
 		this.width = width;
 		
@@ -99,7 +99,7 @@ var Component = Class.extend({
 		if(height < 0) {
 			console.error("impossible height");
 		}
-		var notify = (this.height == height);
+		var notify = (this.height != height);
 		
 		this.height = height;
 		
@@ -212,7 +212,7 @@ var Component = Class.extend({
 	
 	draw: function() {
 		console.error("probably wrong");
-		return this.getContext().getImageData(0, 0, this.getWidth(), this.getHeight()); //?
+		//return this.getContext().getImageData(0, 0, this.getWidth(), this.getHeight()); //?
 	},
 	
 	// init

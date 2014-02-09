@@ -148,6 +148,8 @@ var Panel = Container.extend({
 				c.setX(currentX);
 				c.setHeight(this.getHeight()); //TODO: if stretch
 				c.setWidth(newWidth);
+				console.log('ccc ' + c.toString());
+				console.log(c);
 				
 				currentX += newWidth; //TODO: border, margin?
 			}
@@ -159,6 +161,8 @@ var Panel = Container.extend({
 				currentX += a.width;
 			}
 		}
+		
+		console.log(components);
 	},
 	
 	positionVertical: function() {
@@ -208,7 +212,8 @@ var Panel = Container.extend({
 			translation.y += c.getHeight();
 		}
 		
-		this.setHeight(translation.y + tiling.margin);
+		//TODO: yeah?
+		//this.setHeight(translation.y + tiling.margin);
 	},
 	
 	positionHorizontal: function() {
@@ -258,13 +263,14 @@ var Panel = Container.extend({
 			translation.x += c.getWidth();
 		}
 		
-		this.setWidth(translation.x + tiling.margin);
+		// TODO: yeah?
+		//this.setWidth(translation.x + tiling.margin);
 	},
 	
 	draw: function() {
 		var fill = this.getTiling().fill;
 		var tiling = this.getTiling().tiling;
-	
+		
 		if(fill == 'flex') {
 			if(tiling == 'vertical') {
 				this.positionVerticalFlex();
@@ -288,14 +294,12 @@ var Panel = Container.extend({
 			}
 		}
 		
+		//console.log(this.getComponents());
+		
 		this.makeNewContext();
 		var image = this._super();
 		
 		var context = this.getContext();
-		context.lineWidth = 1;
-		context.strokeStyle = '#FF0000';
-		context.rect(0, 0, this.getWidth(), this.getHeight());
-		context.stroke();
 		
 		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
 	},
