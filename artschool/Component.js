@@ -51,11 +51,11 @@ var Component = Class.extend({
 	},
 	
 	setX: function(x) {
-		var notify = (this.x != x);
+		var notify = !!(this.x != x);
 	
 		this.x = x;
 		
-		if(notify === true) {
+		if(notify) {
 			this.notifyWatchers();
 		}
 	},
@@ -65,11 +65,11 @@ var Component = Class.extend({
 	},
 	
 	setY: function(y) {
-		var notify = (this.y != y);
+		var notify = !!(this.y != y);
 		
 		this.y = y;
 		
-		if(notify === true) {
+		if(notify) {
 			this.notifyWatchers();
 		}
 	},
@@ -85,11 +85,11 @@ var Component = Class.extend({
 		if(width < 0) {
 			console.error("impossible width");
 		}
-		var notify = (this.width != width);
+		var notify = !!(this.width != width);
 		
 		this.width = width;
 		
-		if(notify === true) {
+		if(notify) {
 			this.notifyWatchers();
 		}
 	},
@@ -105,11 +105,11 @@ var Component = Class.extend({
 		if(height < 0) {
 			console.error("impossible height");
 		}
-		var notify = (this.height != height);
+		var notify = !!(this.height != height);
 		
 		this.height = height;
 		
-		if(notify === true) {
+		if(notify) {
 			this.notifyWatchers();
 		}
 	},

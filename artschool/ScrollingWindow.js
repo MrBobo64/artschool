@@ -1,6 +1,6 @@
 // TODO: make this container and only allow one object?
 
-var ScrollingWindow = Component.extend({	
+var ScrollingWindow = Container.extend({	
 	adjustScrollbars: function() {
 		this.hScrollbar.setY(this.getHeight() - this.hScrollbar.getHeight());
 		this.vScrollbar.setX(this.getWidth() - this.vScrollbar.getWidth());
@@ -19,21 +19,22 @@ var ScrollingWindow = Component.extend({
 	},
 	
 	getContent: function() {
-		return this.content;
+		return this.getComponents()[0];
 	},
 	
-	setContent: function(contentComponent) {
-		if(this.content) {
-			this.content.removeWatcher(this);
+	addComponent: function(component) {
+		var content = this.getComponents();
+		
+		while(this.getComponents().length > 0) {
+			this.removeComponentAtIndex(0);
 		}
-	
-		this.content = contentComponent;
-		contentComponent.setParent(this);
-		contentComponent.addWatcher(this);
+		
+		this._super(component);
+		component.addWatcher(this);
 	},
 	
 	watchChanged: function(component) {
-		if(component != this.content) {
+		if(component != this.getComponents()[0]) {
 			console.log("scrollwindow watching something not its content");
 		}
 
@@ -49,43 +50,20 @@ var ScrollingWindow = Component.extend({
 	},
 	
 	draw: function() {
-		//var context = this.getNewContext();
-		//context.save();
-		
-		//context.lineWidth = 0;
-		//context.rect(0, 0, this.getWidth(), this.getHeight());
-		//context.stroke();
-		//context.clip();
-		console.log("SSSSSS: " + this.toString());
-		this.getContent().draw();
-		var portion = this.getContent().getContext().getImageData(this.scrollX, this.scrollY, this.getWidth(), this.getHeight());
+		this._super();
+	
+		var content = this.getComponents()[0];
+		content.draw();
+		var portion = content.getContext().getImageData(this.scrollX, this.scrollY, this.getWidth(), this.getHeight());
 
 		var context = this.getNewContext();
 		context.putImageData(portion, 0, 0);
-		
-		// This could easily not work at all
-		// Does putImageData have the concept of putting data outside the range
-		// of the destination (aka ignore it)
-		// use dirty if its an issue
-		//context.putImageData(this.getContent().draw(), -this.scrollX, -this.scrollY);
-		//context.putImageData(this.getContent().draw(), this.getContent().getX(), this.getContent().getY());
-		// TODO: mabye manually place correct porion here!!!!
 		
 		this.drawScrollbars(context);
 		
 		context.restore();
 		
-		if(this.drawFrame) {
-			context.lineWidth = 1;
-			//if(this.isDropHighlighted()) {
-			//	context.strokeStyle = '#FFDD50';
-			//}
-			//else {
-				context.strokeStyle = '#000000';
-			//}
-			context.rect(0, 0, this.getWidth(), this.getHeight());
-			context.stroke();
-		}
+		this.drawFrame();
 		
 		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
 	},
@@ -165,8 +143,26 @@ var ScrollingWindow = Component.extend({
 		this.getContent().addWatcher(this);
 	},
 	
-	init: function(contentComponent, config) {
-		this._super(config && config.dimensions || null);
+	/*setWidth: function(width) {
+		this._super(width);
+		
+		var content = this.getContent();
+		if(content && this.getTiling().fill == 'flex') {
+			content.setWidth(width);
+		}
+	},
+	
+	setHeight: function(height) {
+		this._super(height);
+		
+		var content = this.getContent();
+		if(content && this.getTiling().fill == 'flex') {
+			content.setHeight(height);
+		}
+	},*/
+	
+	init: function(content, config) {
+		this._super(config);
 		
 		this.scrollX = 0;
 		this.scrollY = 0;
@@ -176,10 +172,6 @@ var ScrollingWindow = Component.extend({
 		
 		this.setType('scrollingwindow');
 		
-		this.content = contentComponent;
-		contentComponent.setParent(this);
-		contentComponent.addWatcher(this);
-		
-		this.frame = new Frame(config && config.frame || null);
+		this.addComponent(content);
 	}
 });

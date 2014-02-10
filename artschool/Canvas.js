@@ -265,6 +265,9 @@ var Canvas = Container.extend({
 		
 		this.mouseIsDown = false;
 		
+		this.getTiling().fill = 'none';
+		this.getFrame().hidden = true;
+		
 		this.fixDimensions();
 	}
 });
