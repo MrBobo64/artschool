@@ -4,7 +4,7 @@ ArtSchool.canvas = canvas;
 
 var D_THICK = 1;
 
-var panel = new Panel({
+var panel = new Container({
 	tiling: {
 		tiling: 'vertical',
 		fill: 'none',
@@ -19,8 +19,9 @@ var panel = new Panel({
 	}
 });
 
-//panel.setWidth(200);
-//panel.setHeight(200);
+panel.setWidth(200);
+panel.setHeight(200);
+canvas.addComponent(panel);
 
 panel.addComponent(new Just('#22FF22'));
 panel.addComponent(new Just('#22DD22'));
@@ -29,7 +30,7 @@ panel.addComponent(new Just('#22AA22'));
 panel.addComponent(new Just('#229922'));
 panel.addComponent(new Just('#228822'));
 
-var s = new ScrollingWindow(panel, {
+/*var s = new ScrollingWindow(panel, {
 	tiling: {
 		fill: 'flex',
 		margin: 0,
@@ -44,6 +45,6 @@ var s = new ScrollingWindow(panel, {
 s.setWidth(200);
 s.setHeight(200);
 
-canvas.addComponent(s);
+canvas.addComponent(s);*/
 
 canvas.drawCanvas();
