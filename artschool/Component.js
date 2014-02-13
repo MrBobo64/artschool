@@ -190,7 +190,7 @@ var Component = Class.extend({
 		this.setHeight(height);
 	},
 	
-	getCanvas: function() {
+	/*getCanvas: function() {
 		if(!this.canvas) { //TODO
 			var canvas = document.createElement('canvas');
 			canvas.width  = this.getWidth();
@@ -214,8 +214,16 @@ var Component = Class.extend({
 	
 	makeNewContext: function() {
 		this.getNewContext();
-	},
+	},*/
 	
+    getShapes: function() {
+        return this.shapes;
+    },
+    
+    addShape: function(shape) {
+        this.getShapes().push(shape);
+    },
+    
 	draw: function() {
 		console.error("probably wrong");
 		//return this.getContext().getImageData(0, 0, this.getWidth(), this.getHeight()); //?
@@ -235,5 +243,7 @@ var Component = Class.extend({
 		this.arrangement = new Arrangement();
 		
 		this.watchers = [];
+        
+        this.shapes = [];
 	}
 });
