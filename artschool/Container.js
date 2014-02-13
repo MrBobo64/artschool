@@ -320,21 +320,30 @@ var Container = Component.extend({
 		}
 	},
 	
-	drawFrame: function() {
-		var context = this.getContext();
+	drawFrame: function(paper) {
+		/*var context = this.getContext();
 		
 		if(this.frame && !this.frame.hidden) {
 			context.strokeStyle = this.frame.color;
 			context.lineWidth = this.frame.thickness;
 			context.rect(0, 0, this.getWidth(), this.getHeight());
 			context.stroke();
-		}
+		}*/
+        
+        if(this.frame && !this.frame.hidden) {
+            var rect = paper.rect(0, 0, this.getWidth(), this.getHeight());
+            rect.attr({
+                fill: 'none',
+                stroke: this.frame.color,
+                strokeWidth: this.frame.thickness
+            });
+        }
 	},
 	
 	draw: function() {
 		this.arrangeComponents();
 	
-		var context = this.getNewContext();
+		/*var context = this.getNewContext();
 		
 		var components = this.getComponents();
 		for(var i = 0; i < components.length; i++) {
@@ -346,7 +355,25 @@ var Container = Component.extend({
 		
 		this.drawFrame();
 		
-		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
+		return context.getImageData(0, 0, this.getWidth(), this.getHeight());*/
+        
+        var paper = this.getNewSnap();
+        
+        var components = this.getComponents();
+		for(var i = 0; i < components.length; i++) {
+            var c = components[i];
+			var image = c.draw();
+            
+            paper.add(image);
+            image.attr({
+                x: c.getX(),
+                y: c.getY()
+            });
+        }
+        
+        this.drawFrame(paper);
+        
+        return paper;
 	},
 	
 	isDropHighlighted: function() {

@@ -1,7 +1,7 @@
 
-var Shape = Class.extend({
+var Shape = Component.extend({
 
-    drawSVG: function(svg) {
+    /*drawSVG: function(svg) {
         console.error('Base class Shape cannot draw SVG');
     },
     
@@ -43,7 +43,7 @@ var Shape = Class.extend({
     
     setY: function(y) {
         this.y = y;
-    },
+    },*/
     
     getFill: function() {
         return this.fill;
@@ -61,15 +61,44 @@ var Shape = Class.extend({
         this.stroke = stroke;
     },
     
-    init: function(x, y, fill, stroke) {
-        this.x = x;
-        this.y = y;
+    getStrokeWidth: function() {
+        return this.strokeWidth;
+    },
+    
+    setStrokeWidth: function(strokeWidth) {
+        this.strokeWidth = strokeWidth;
+    },
+    
+    /*addAttribute: function(attribute) {
+        this.getAttributes().push(attribute);
+    },
+    
+    getAttributes: function() {
+        return this.attributes;
+    },
+    
+    createAttribute: function() {
+        var attributes = this.attributes();
+        var styleString = "";
+        for(var i = 0; i < styles.length; i++) {
+            var style = styles[i];
+            styleString = styleString + style.name + ':' + style.func.call(this) + '; ';
+        }
+    
+        return styleString;
+        //return "stroke:" + this.getStroke() + "; fill:" + this.getFill() + ":";
+    },*/
+    
+    init: function(dimensions, style) {
+        this._super(dimensions);
         
-        this.fill = fill || '#00FF00';
-        this.stroke = stroke || '#00FF00';
+        this.fill = style && style.fill || '#00FF00';
+        this.stroke = style && style.stroke || '#00FF00';
+        this.strokeWidth = style && style.strokeWidth || 0;
         
         this.styles = [
             {name: 'stroke', func: this.getStroke},
+            {name: 'strokeWidth', func: this.getStrokeWidth},
             {name: 'fill', func: this.getFill}
         ];
     }

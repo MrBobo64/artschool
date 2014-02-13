@@ -1,10 +1,18 @@
-var Just = Component.extend({
+var Just = Rectangle.extend({
 	init: function(color) {
-		this._super();
-		this.color = color;
+		this._super({
+            dimensions: {
+                width: 100,
+                height: 40
+            },
+            style: {
+                fill: color
+            }
+        });
+		//this.color = color;
 		
-		this.setWidth(100);
-		this.setHeight(40);
+		//this.setWidth(100);
+		//this.setHeight(40);
 		
 		//ArtSchool.canvas.registerDraggable(this);
         
@@ -28,7 +36,7 @@ var Just = Component.extend({
 		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
 	}*/
     
-    draw: function() {
+    /*draw: function() {
         if(!this.shape) {
             this.shape = new Rectangle(this.getX(),
                                        this.getY(),
@@ -43,5 +51,5 @@ var Just = Component.extend({
         
         // Shapes need chuhrn
         // Add child, takes more shapes
-    }
+    }*/
 });

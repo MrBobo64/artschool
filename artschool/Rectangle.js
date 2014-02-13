@@ -1,6 +1,6 @@
 var Rectangle = Shape.extend({
 
-    drawSVG: function(svg) {
+    /*drawSVG: function(svg) {
         var rect = svg.createRectangle();
         svg.populate(rect, {
             x: this.getX(),
@@ -13,8 +13,20 @@ var Rectangle = Shape.extend({
         });
         
         svg.append(rect);
-    },
+    },*/
 
+    draw: function() {
+        var paper = this.getNewSnap();
+        var rect = paper.rect(0, 0, this.getWidth(), this.getHeight(), this.getRx(), this.getRy());
+        rect.attr({
+            fill: this.getFill(),
+            stroke: this.getStroke(),
+            strokeWidth: this.getStrokeWidth()
+        });
+        
+        return rect;
+    },
+    
     getRx: function() {
         return this.rx;
     },
@@ -23,11 +35,8 @@ var Rectangle = Shape.extend({
         return this.ry;
     },
     
-    init: function(x, y, width, height, config) {
-        this._super(x, y, config && config.fill || null, config && config.stroke || null);
-        
-        this.width = width;
-        this.height = height;
+    init: function(config) {
+        this._super(config && config.dimensions || null, config && config.style || null);
         
         this.rx = config && config.rx || 0;
         this.ry = config && config.ry || 0;

@@ -1,6 +1,8 @@
 
-var canvas = new Canvas(document.getElementById('d'));
-ArtSchool.canvas = canvas;
+//var canvas = new Canvas(document.getElementById('d'));
+//ArtSchool.canvas = canvas;
+
+ArtSchool.snap = Snap(document.getElementById('s'));
 
 var D_THICK = 1;
 
@@ -21,7 +23,6 @@ var panel = new Container({
 
 panel.setWidth(200);
 panel.setHeight(200);
-canvas.addComponent(panel);
 
 panel.addComponent(new Just('#22FF22'));
 panel.addComponent(new Just('#22DD22'));
@@ -30,7 +31,9 @@ panel.addComponent(new Just('#22AA22'));
 panel.addComponent(new Just('#229922'));
 panel.addComponent(new Just('#228822'));
 
-/*var s = new ScrollingWindow(panel, {
+//ArtSchool.snap.add(panel.draw());
+
+var s = new ScrollingWindow(panel, {
 	tiling: {
 		fill: 'flex',
 		margin: 0,
@@ -41,10 +44,14 @@ panel.addComponent(new Just('#228822'));
 		color: '#0000FF',
 		thickness: D_THICK
 	}
-});
+})
 s.setWidth(200);
 s.setHeight(200);
 
-canvas.addComponent(s);*/
+s.addComponent(panel);
 
-canvas.drawCanvas();
+ArtSchool.snap.add(s.draw());
+
+//canvas.addComponent(s);
+
+//canvas.drawCanvas();

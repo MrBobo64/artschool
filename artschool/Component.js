@@ -190,6 +190,17 @@ var Component = Class.extend({
 		this.setHeight(height);
 	},
 	
+    getNewSnap: function() {
+        //var svg = document.createElement('svg');
+        //svg.width = this.getWidth();
+        //svg.height = this.getHeight();
+        //svg.style.hidden = true;
+        
+        //return Snap(svg);
+        
+        return Snap(this.getWidth(), this.getHeight());
+    },
+    
 	/*getCanvas: function() {
 		if(!this.canvas) { //TODO
 			var canvas = document.createElement('canvas');
@@ -216,16 +227,16 @@ var Component = Class.extend({
 		this.getNewContext();
 	},*/
 	
-    getShapes: function() {
+    /*getShapes: function() {
         return this.shapes;
     },
     
     addShape: function(shape) {
         this.getShapes().push(shape);
-    },
+    },*/
     
 	draw: function() {
-		console.error("probably wrong");
+		console.error("Component cannot draw");
 		//return this.getContext().getImageData(0, 0, this.getWidth(), this.getHeight()); //?
 	},
 	
@@ -243,7 +254,5 @@ var Component = Class.extend({
 		this.arrangement = new Arrangement();
 		
 		this.watchers = [];
-        
-        this.shapes = [];
 	}
 });

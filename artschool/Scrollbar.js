@@ -9,7 +9,7 @@ var Scrollbar = Component.extend({
 	},
 	
 	draw: function() {
-		if(!this.cachedImage) {
+		/*if(!this.cachedImage) {
 			var context = this.getContext();
 			context.clearRect(0, 0, this.getWidth(), this.getHeight());
 			context.rect(0, 0, this.getWidth(), this.getHeight());
@@ -18,10 +18,41 @@ var Scrollbar = Component.extend({
 			this.cachedImage = context.getImageData(0, 0, this.getWidth(), this.getHeight());
 		}
 		
-		return this.cachedImage;
+		return this.cachedImage;*/
+        
+        if(!this.rect) {
+            var paper = this.getNewSnap();
+            var rect = paper.rect(0, 0, this.getWidth(), this.getHeight());
+            rect.attr({
+                fill: '#FFFFFF',
+                stroke: '#000000',
+                strokeWidth: 0.5
+            });
+            
+            rect.drag(this.drag, this.dragStart, this.dragEnd, this);
+            
+            this.rect = rect;
+        }
+        
+        return this.rect;
 	},
 	
-	drag: function(dx, dy) {
+    dragStart: function(x, y, event) {
+        this.ndx = x;
+        this.ndy = y;
+    },
+    
+    dragEnd: function(event) {
+    
+    },
+    
+	drag: function(dx, dy, x, y, ie) {
+        dx = x - this.ndx;
+        dy = y - this.ndy;
+    
+        this.ndx = x;
+        this.ndy = y;
+    
         if(this.vertical) {
             this.setY(this.getY() + dy);
             if(this.getY() < 0) {
@@ -44,6 +75,11 @@ var Scrollbar = Component.extend({
             
             this.scrollingWindow.scrollHorizontal(this.getX());
         }
+        
+        this.rect.attr({
+            x: this.getX(),
+            y: this.getY()
+        });
     },
 	
 	// init
@@ -67,6 +103,6 @@ var Scrollbar = Component.extend({
 		
 		this.setType('scrollbar' + (this.vertical ? '(v)' : '(h)'));
 		
-		ArtSchool.canvas.registerDraggable(this);
+		//ArtSchool.canvas.registerDraggable(this);
 	}
 });

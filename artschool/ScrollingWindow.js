@@ -41,31 +41,61 @@ var ScrollingWindow = Container.extend({
 		this.checkScrollbars();
 	},
 	
-	drawScrollbars: function(context) {
+	drawScrollbars: function(paper) {
 		var hImage = this.hScrollbar.draw();
 		var vImage = this.vScrollbar.draw();
 		
-		context.putImageData(hImage, this.hScrollbar.getX(), this.hScrollbar.getY());
-		context.putImageData(vImage, this.vScrollbar.getX(), this.vScrollbar.getY());
+		//context.putImageData(hImage, this.hScrollbar.getX(), this.hScrollbar.getY());
+		//context.putImageData(vImage, this.vScrollbar.getX(), this.vScrollbar.getY());
+        
+        hImage.attr({
+            x: this.hScrollbar.getX(),
+            y: this.hScrollbar.getY()
+        });
+        vImage.attr({
+            x: this.vScrollbar.getX(),
+            y: this.vScrollbar.getY()
+        });
+        
+        paper.add(vImage);
+        paper.add(hImage);
+        
 	},
 	
 	draw: function() {
-		this._super();
-	
-		var content = this.getComponents()[0];
+		this.contents = this._super();
+        var paper = this.getNewSnap();
+        
+        var mask = paper.rect(0, 0, this.getWidth(), this.getHeight());
+        mask.attr({
+            fill: '#fff'
+        });
+        
+        paper.add(this.contents);
+        this.contents.attr({
+            x: -this.scrollX,
+            y: -this.scrollY
+        });
+        
+        paper.attr({
+            mask: mask
+        });
+        
+		/*var content = this.getComponents()[0];
 		content.draw();
 		var portion = content.getContext().getImageData(this.scrollX, this.scrollY, this.getWidth(), this.getHeight());
 
 		var context = this.getNewContext();
-		context.putImageData(portion, 0, 0);
+		context.putImageData(portion, 0, 0);*/
 		
-		this.drawScrollbars(context);
+		this.drawScrollbars(paper);
 		
-		context.restore();
+		//context.restore();
 		
-		this.drawFrame();
+		//this.drawFrame();
 		
-		return context.getImageData(0, 0, this.getWidth(), this.getHeight());
+		//return context.getImageData(0, 0, this.getWidth(), this.getHeight());
+        return paper;
 	},
 	
 	allowDrop: function(component) {
@@ -112,7 +142,13 @@ var ScrollingWindow = Container.extend({
 		this.getContent().setY(this.getY() - this.scrollY);
 		
 		//TODO: don't do this
-		ArtSchool.canvas.redrawDirty(this.getRealBoundingBox());
+		//ArtSchool.canvas.redrawDirty(this.getRealBoundingBox());
+        if(this.contents) {
+            this.contents.attr({
+                x: -this.scrollX,
+                y: -this.scrollY
+            });
+        }
 		
 		this.getContent().addWatcher(this);
     },
@@ -138,7 +174,13 @@ var ScrollingWindow = Container.extend({
 		this.getContent().setX(this.getX() - this.scrollX);
 		
 		//TODO: don't do this
-		ArtSchool.canvas.redrawDirty(this.getRealBoundingBox());
+		//ArtSchool.canvas.redrawDirty(this.getRealBoundingBox());
+        if(this.contents) {
+            this.contents.attr({
+                x: -this.scrollX,
+                y: -this.scrollY
+            });
+        }
 		
 		this.getContent().addWatcher(this);
 	},
