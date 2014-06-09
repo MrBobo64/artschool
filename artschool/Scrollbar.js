@@ -36,22 +36,12 @@ var Scrollbar = Component.extend({
         
         return this.rect;
 	},
-	
-    dragStart: function(x, y, event) {
-        this.ndx = x;
-        this.ndy = y;
-    },
     
-    dragEnd: function(event) {
-    
-    },
-    
-	drag: function(dx, dy, x, y, ie) {
-        dx = x - this.ndx;
-        dy = y - this.ndy;
-    
-        this.ndx = x;
-        this.ndy = y;
+	drag: function(dx, dy, ix, iy, ie) {
+        dx = ix - this.ndx;
+        dy = iy - this.ndy;
+        this.ndx = ix;
+        this.ndy = iy;
     
         if(this.vertical) {
             this.setY(this.getY() + dy);

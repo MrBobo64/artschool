@@ -142,9 +142,50 @@ var Component = Class.extend({
 		return this.getType() + ': (' + this.getX() + ', ' + this.getY() + '): ' + this.getWidth() + ' x ' + this.getHeight();
 	},
 	
-	drag: function(dx, dy) {
+    getDragger: function() {
+        return this.dragger;
+    },
+    
+    setDragger: function(dragger) {
+        this.dragger = dragger;
+    },
+    
+    dragStart: function(x, y, event) {
+        if(this.canEscapeParent()) {
+            var realCoordinates = this.getRealCoordinates();
+        
+            this.oldParent = this.getParent();
+            this.oldParent.removeComponent(this);
+            
+            this.setX(realCoordinates.x);
+            this.setY(realCoordinates.y);
+            
+            ArtSchool.addOrphan(this);
+        }
+    
+        this.ndx = x;
+        this.ndy = y;
+    },
+    
+    dragEnd: function(event) {
+    
+    },
+    
+	drag: function(dx, dy, ix, iy, ie) {
+        dx = ix - this.ndx;
+        dy = iy - this.ndy;
+        this.ndx = ix;
+        this.ndy = iy;
+    
 		this.setX(this.getX() + dx);
 		this.setY(this.getY() + dy);
+        
+        if(this.getDragger()) {
+            this.getDragger().attr({
+                x: this.getX(),
+                y: this.getY()
+            });
+        }
 	},
 	
 	getRealCoordinates: function() {

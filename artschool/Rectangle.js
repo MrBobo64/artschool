@@ -16,15 +16,23 @@ var Rectangle = Shape.extend({
     },*/
 
     draw: function() {
-        var paper = this.getNewSnap();
-        var rect = paper.rect(0, 0, this.getWidth(), this.getHeight(), this.getRx(), this.getRy());
-        rect.attr({
-            fill: this.getFill(),
-            stroke: this.getStroke(),
-            strokeWidth: this.getStrokeWidth()
-        });
-        
-        return rect;
+        if(!this.rect) {
+            var paper = this.getNewSnap();
+            var rect = paper.rect(0, 0, this.getWidth(), this.getHeight(), this.getRx(), this.getRy());
+            rect.attr({
+                fill: this.getFill(),
+                stroke: this.getStroke(),
+                strokeWidth: this.getStrokeWidth()
+            });
+            
+            if(this.isDraggable()) {
+                rect.drag(this.drag, this.dragStart, this.dragEnd, this);
+                this.setDragger(rect);
+            }
+            
+            this.rect = rect;
+        }
+        return this.rect;
     },
     
     getRx: function() {
